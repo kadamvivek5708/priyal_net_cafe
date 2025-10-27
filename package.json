@@ -1,0 +1,36 @@
+{
+  "name": "priyal_net_cafe",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "netCafe"
+  ],
+  "homepage": "https://github.com/kadamvivek5708/priyal_net_cafe#readme",
+  "bugs": {
+    "url": "https://github.com/kadamvivek5708/priyal_net_cafe/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kadamvivek5708/priyal_net_cafe.git"
+  },
+  "license": "ISC",
+  "author": "Vivek Kadam",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2"
+  }
+}
