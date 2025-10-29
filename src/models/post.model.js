@@ -1,6 +1,6 @@
 import mongoose,{Schema} from "mongoose";
 
-const addSchema = new Schema({
+const PostSchema = new Schema({
     title:{
         type:String,
         required:true,
@@ -23,7 +23,7 @@ const addSchema = new Schema({
         required:true
     },
     lastDate:{
-        type:Date,
+        type:String,
         required:true
     },
     author:{
@@ -57,4 +57,4 @@ const addSchema = new Schema({
     
 },{timestamps:true})
 
-export const Add = mongoose.model("Add", addSchema)
+export const Post = mongoose.model("Post", PostSchema)

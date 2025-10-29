@@ -22,4 +22,7 @@ app.use("/api/v1/", healthcheckRouter)
 import userRouter from "./routes/user.routes.js"
 app.use("/api/v1/admin", userRouter)
 
+import postRouter from "./routes/post.routes.js"
+app.use("/api/v1/post", postRouter)
+
 export {app} 

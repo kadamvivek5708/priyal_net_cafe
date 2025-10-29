@@ -31,19 +31,19 @@ const registerAdmin = asyncHandler( async (req,res) => {
         throw new ApiError(409,"Admin with username already Exist");
     }
 
-    // create user object - create entry in db
+    // create admin object - create entry in db
     const user = await User.create({
         username : username.toLowerCase(),
         password,
     })
-    console.log(user)
+    // console.log(user)
 
     // optimised as we need one less db call
     const createdUser = user.toObject();
     delete createdUser.password;
     delete createdUser.refreshToken;
 
-    // check for user creation
+    // check for admin creation
     if (!createdUser) {
         throw new ApiError(500,"Something went wrong while registering admin")
     }
@@ -70,7 +70,7 @@ const loginAdmin = asyncHandler(async (req,res) => {
         throw new ApiError(400,"Please Enter Password");
     }
 
-    // 2.is user signed up
+    // 2.is admin signed up
     const user = await User.findOne({username})
     if (!user) {
         throw new ApiError(404,"Admin not Found !");

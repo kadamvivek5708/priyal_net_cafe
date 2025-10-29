@@ -12,7 +12,7 @@ const analyticsSchema =  new Schema({
     postInteractions:[{
         postId:{
             type:mongoose.Types.ObjectId,
-            ref:"Add"
+            ref:"Post"
         },
         views:{
             type:Number,
