@@ -1,1 +1,1 @@
-export const DB_NAME = "net_cafe";
+export const DB_NAME = "PriyalNetCafe";
