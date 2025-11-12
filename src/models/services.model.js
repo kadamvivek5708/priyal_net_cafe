@@ -7,7 +7,7 @@ const servicesSchema = new Schema({
         unique: true,
         trim:true
     },
-    doumentsRequired:{
+    documentsRequired:{
         type:[String],
         required:true,
         default:[]
@@ -23,6 +23,10 @@ const servicesSchema = new Schema({
         type:mongoose.Types.ObjectId,
         ref:"User",
         required: true
+    },
+    isActive:{
+        type:Boolean,
+        default:true
     }
 },{timestamps:true})
 

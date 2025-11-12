@@ -87,7 +87,7 @@ const updatePost = asyncHandler(async(req, res)=> {
 const deletePost = asyncHandler(async(req, res)=> {
     const {postId} = req.params
     const deletedPost =  await Post.findByIdAndDelete(postId)
-    if(!deletedPost) {new ApiError(404,"Post not found or U dont have permission")}
+    if(!deletedPost) {new ApiError(404,"Post not found")}
 
     return res  
         .status(200)
