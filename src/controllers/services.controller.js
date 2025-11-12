@@ -1,11 +1,11 @@
-import Services from "../models/services.model.js"
+import { Services } from "../models/services.model.js"
 import { ApiError } from "../utils/apiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js" 
 
 const createService = asyncHandler(async(req,res)=>{
     const {name, documentsRequired, fees, processingTime} = req.body
-    if([name, documentsRequired, fees, processingTime].some((field) => field?.trim() === "")) {
+    if([name, documentsRequired, fees, processingTime].some((field) => field?.trim === "")) {
         throw new ApiError(400,"All fields are required")
     }
     
@@ -13,7 +13,8 @@ const createService = asyncHandler(async(req,res)=>{
         name,
         documentsRequired,
         fees,
-        processingTime
+        processingTime,
+        author:req.user?._id
     })
     if(!newService) throw new ApiError(500,"Something went wrong while creating db object")
     return res.status(201)
@@ -25,7 +26,7 @@ const updateService = asyncHandler(async(req,res) => {
     const {name, documentsRequired, fees, processingTime} = req.body
 
     const service =await Services.findOne({
-        _id:serviceId,documentsRequired,
+        _id:serviceId,
         author:req.user?._id
     })
     if(!service){throw new ApiError(404,"Video not found or you don't have permissions")}
@@ -57,7 +58,7 @@ const deleteService = asyncHandler(async(req,res) => {
     if(!deletedService) {new ApiError(404,"Post not found")}
     return res  
         .status(200)
-        .json(new ApiResponse(200,deletedPost,"Video deleted Succesfully"))
+        .json(new ApiResponse(200,deletedService,"Video deleted Succesfully"))
 })
 
 const getService = asyncHandler(async(req,res) => {

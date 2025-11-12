@@ -25,4 +25,7 @@ app.use("/api/v1/admin", userRouter)
 import postRouter from "./routes/post.routes.js"
 app.use("/api/v1/post", postRouter)
 
+import servicesRouter from "./routes/services.routes.js"
+app.use("/api/v1/services", servicesRouter)
+
 export {app} 

@@ -8,7 +8,7 @@ const createPost = asyncHandler(async(req, res)=> {
     const authorId = req.user?._id
     const optionalFields = {};
 
-    if([title, postName, ageLimit, qualifications, fees, lastDate].some((field) => field?.trim() === "")) {
+    if([title, postName, ageLimit, qualifications, fees, lastDate].some((field) => field?.trim === "")) {
         throw new ApiError(400,"All fields are required")
     }
 
