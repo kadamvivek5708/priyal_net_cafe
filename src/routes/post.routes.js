@@ -5,6 +5,7 @@ import { createPost,
         updatePost } from "../controllers/post.controller.js";
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { trackPostVisit } from "../middlewares/trackPostViews.middleware.js";
 
 const router = Router()
 
@@ -14,7 +15,7 @@ router.route("/update-post/:postId").patch(verifyJWT, updatePost)
 router.route("/delete-post/:postId").delete(verifyJWT, deletePost)
 
 // routes for everyone
-router.route("/get-post/:postId").get(getPostById)
+router.route("/get-post/:postId").get(trackPostVisit,getPostById)
 router.route("/get-all-posts").get(getAllPosts)
 
 export default router

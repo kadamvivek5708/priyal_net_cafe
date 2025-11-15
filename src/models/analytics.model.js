@@ -5,10 +5,12 @@ const analyticsSchema =  new Schema({
         type:Number,
         default:0
     },
+
     date: {
     type: Date,
     default: Date.now,
     },
+    
     postInteractions:[{
         postId:{
             type:mongoose.Types.ObjectId,
@@ -20,5 +22,9 @@ const analyticsSchema =  new Schema({
         }
     }]
 },{timestamps:true})
+
+analyticsSchema.index({ date: 1 });
+analyticsSchema.index({ "postInteractions.postId": 1 });
+
 
 export const Analytics = mongoose.model("Analytics",analyticsSchema)
