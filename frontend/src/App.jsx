@@ -1,11 +1,11 @@
-import './App.css'
+import { AuthProvider } from "./features/auth/hooks/useAuth"
+import AppRouter from './routes/AppRouter';
 
 function App() {
-
   return (
-    <>
-      <h1>Hello I am developing this new project</h1>
-    </>
+    <AuthProvider>
+      <AppRouter/>
+    </AuthProvider>
   )
 }
 
