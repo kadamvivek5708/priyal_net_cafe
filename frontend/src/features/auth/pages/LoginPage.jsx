@@ -111,7 +111,7 @@ export function LoginPage() {
             
             <div className="relative hidden bg-gray-100 dark:bg-gray-700 md:block">
               <img
-                src="logo.png"
+                src="logo1.png"
                 alt="Image"
                 className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.3] dark:grayscale"
                 onError={(e) => {

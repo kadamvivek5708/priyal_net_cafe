@@ -1,6 +1,7 @@
 import { ApiError } from "../utils/apiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Analytics } from "../models/analytics.model.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";    
 
 const getStartOfToday = () => {
@@ -125,14 +126,20 @@ const getAnalyticsSummary = asyncHandler (async (req, res) => {
     ]);
 
     // 4. Send the final response
-    res.status(200).json({
-      totalVisits: totalStats?.totalVisits || 0,
-      topPosts,
-      dateRange: {
-        startDate: startDate || 'all',
-        endDate: endDate || 'all'
-      }
-    });
+    return res.status(200).json(
+      new ApiResponse(
+        200, 
+        {
+          totalVisits: totalStats?.totalVisits || 0,
+          topPosts,
+          dateRange: {
+            startDate: startDate || 'all',
+            endDate: endDate || 'all'
+          }
+        }, 
+        "Analytics fetched successfully"
+      )
+    );
 })
 
 export {
