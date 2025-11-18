@@ -2,14 +2,14 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LoginPage from '../features/auth/pages/LoginPage';
 // Import your public pages
-import HomePage from '../pages/HomePage';
-import NotFoundPage from '../pages/NotFoundPage';
+// import HomePage from '../pages/HomePage';
+// import NotFoundPage from '../pages/NotFoundPage';
 
 function AppRouter() {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={<HomePage />} />
+      {/* <Route path="/" element={<HomePage />} /> */}
       
       {/* This is the route you'll test: */}
       <Route path="/login" element={<LoginPage />} />
@@ -18,7 +18,7 @@ function AppRouter() {
       {/* <Route path="/admin/dashboard" element={...} /> */}
 
       {/* Catch-all Not Found Route */}
-      <Route path="*" element={<NotFoundPage />} />
+      {/* <Route path="*" element={<NotFoundPage />} /> */}
     </Routes>
   );
 }
