@@ -1,13 +1,15 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 // Public Pages
 // import HomePage from '../pages/HomePage'; 
-import LoginPage from '../features/auth/pages/LoginPage';
 // import NotFoundPage from '../pages/NotFoundPage'; 
+import LoginPage from '../features/auth/pages/LoginPage';
 
 // Admin Pages
 import DashboardPage from '../features/admin/pages/DashboardPage';
+import { AdminLayout } from '../components/Layouts/AdminLayout';
+import CreatePostPage from '../features/admin/pages/CreatePostPage';
 
 // Layouts
 import ProtectedRoute from '../components/Layouts/ProtectedRoute';
@@ -20,12 +22,16 @@ function AppRouter() {
       <Route path="/login" element={<LoginPage />} />
 
       {/* --- Protected Admin Routes --- */}
-      {/* Anything inside this Route element checks for the token first */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/admin/dashboard" element={<DashboardPage />} />
-        {/* Future routes will go here: */}
-        {/* <Route path="/admin/posts" element={<ManagePostsPage />} /> */}
-        {/* <Route path="/admin/services" element={<ManageServicesPage />} /> */}
+        {/* Apply AdminLayout to all routes inside */}
+        <Route element={<AdminLayout />}>
+          <Route path="/admin/dashboard" element={<DashboardPage />} />
+          
+          {/* Future Routes (We will build these next) */}
+          {/* <Route path="/admin/posts" element={<ManagePostsPage />} /> */}
+          <Route path="/admin/posts/create" element={<CreatePostPage />} />
+          {/* <Route path="/admin/services" element={<ManageServicesPage />} /> */}
+        </Route>
       </Route>
 
       {/* --- Catch All --- */}

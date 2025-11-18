@@ -10,7 +10,6 @@ import { Card, CardHeader, CardBody } from '../../../components/ui/Card';
 import { Spinner } from '../../../components/ui/Spinner';
 
 const DashboardPage = () => {
-  const { logout } = useAuth();
   const navigate = useNavigate();
   
   // State for data and loading
@@ -36,11 +35,6 @@ const DashboardPage = () => {
     fetchStats();
   }, []);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -59,9 +53,6 @@ const DashboardPage = () => {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
             <p className="text-gray-500 dark:text-gray-400">Priyal Net Cafe Performance</p>
           </div>
-          <Button variant="danger" onClick={handleLogout}>
-            Logout
-          </Button>
         </div>
 
         {/* Stats Grid */}
