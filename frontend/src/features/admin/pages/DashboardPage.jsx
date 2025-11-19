@@ -17,10 +17,14 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [sortBy, setSortBy] = useState('views');
+
   useEffect(() => {
     const fetchStats = async () => {
+      setLoading(true); // Show loading when switching sort
       try {
-        const response = await getAnalyticsSummary();
+        // Pass the sortBy state to the API
+        const response = await getAnalyticsSummary(sortBy);
         if (response.success) {
           setStats(response.data);
         }
@@ -32,17 +36,29 @@ const DashboardPage = () => {
       }
     };
 
-    fetchStats();
-  }, []);
+  fetchStats();
+  }, [sortBy]);
 
-  if (loading) {
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  // Helper to format dates
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      day: 'numeric', month: 'short'
+    });
+  };
+
+  if (loading && !stats) { // Only full page spinner on initial load
     return (
       <div className="flex h-screen items-center justify-center">
         <Spinner size="lg" />
       </div>
     );
   }
-
   return (
     <div className="p-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -51,13 +67,14 @@ const DashboardPage = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-            <p className="text-gray-500 dark:text-gray-400">Priyal Net Cafe Performance</p>
+            <p className="text-gray-500 dark:text-gray-400">Overview of your cafe's performance</p>
           </div>
+          {/* Logout is in sidebar, but if you kept it here temporarily: */}
+          {/* <Button variant="danger" onClick={handleLogout}>Logout</Button> */}
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Total Visits Card */}
           <Card>
             <CardBody>
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Site Visits</h3>
@@ -67,20 +84,21 @@ const DashboardPage = () => {
             </CardBody>
           </Card>
 
-          {/* Placeholders for future stats (e.g. Total Posts count) */}
           <Card>
             <CardBody>
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Active Services</h3>
-              <p className="text-3xl font-bold text-purple-600 mt-2">--</p>
-              <span className="text-xs text-gray-400">(Coming soon)</span>
+              <p className="text-3xl font-bold text-purple-600 mt-2">
+                {stats?.totalServices || 0}
+              </p>
             </CardBody>
           </Card>
           
           <Card>
             <CardBody>
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Posts</h3>
-              <p className="text-3xl font-bold text-green-600 mt-2">--</p>
-              <span className="text-xs text-gray-400">(Coming soon)</span>
+              <p className="text-3xl font-bold text-green-600 mt-2">
+                {stats?.totalPosts || 0}
+              </p>
             </CardBody>
           </Card>
         </div>
@@ -88,25 +106,54 @@ const DashboardPage = () => {
         {/* Top Posts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card className="h-full">
-            <CardHeader>
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Top Viewed Posts</h2>
+            <CardHeader className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+                {sortBy === 'views' ? 'Top Viewed Posts' : 'Latest Active Posts'}
+              </h2>
+              
+              {/* Sorting Dropdown */}
+              <select 
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white py-1 px-2"
+              >
+                <option value="views">Sort by: Views</option>
+                <option value="date">Sort by: Date</option>
+              </select>
             </CardHeader>
-            <CardBody>
+            
+            <CardBody className="relative min-h-[200px]">
+              {/* Small overlay spinner for re-sorting */}
+              {loading && (
+                <div className="absolute inset-0 bg-white/50 dark:bg-gray-800/50 flex items-center justify-center z-10">
+                  <Spinner size="md" />
+                </div>
+              )}
+
               {stats?.topPosts && stats.topPosts.length > 0 ? (
                 <ul className="divide-y divide-gray-200 dark:divide-gray-700">
                   {stats.topPosts.map((post) => (
                     <li key={post.postId} className="py-3 flex justify-between items-center">
-                      <span className="text-gray-700 dark:text-gray-300 truncate pr-4">
-                        {post.title}
-                      </span>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                      <div className="flex flex-col">
+                        <span className="text-gray-700 dark:text-gray-300 truncate font-medium pr-4">
+                          {post.title}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                          {formatDate(post.createdAt)}
+                        </span>
+                      </div>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        sortBy === 'views' 
+                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                          : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                      }`}>
                         {post.views} views
                       </span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-500 dark:text-gray-400 text-sm">No views recorded yet.</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">No active posts found.</p>
               )}
             </CardBody>
           </Card>

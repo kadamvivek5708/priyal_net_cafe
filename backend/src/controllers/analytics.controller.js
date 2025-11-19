@@ -3,6 +3,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { Analytics } from "../models/analytics.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";    
+import { Post } from "../models/post.model.js";
+import { Services } from "../models/services.model.js";
 
 const getStartOfToday = () => {
   const today = new Date();
@@ -50,54 +52,46 @@ const trackPostView = asyncHandler (async (req, res) => {
 })
 
 const getAnalyticsSummary = asyncHandler (async (req, res) => {
+// 1. Get sortBy from query (default to 'views')
+    const { startDate, endDate, sortBy = 'views' } = req.query;
 
-    const { startDate, endDate } = req.query;
-
-    // 1. Create the base $match stage for the date range
     const matchStage = {}; 
     if (startDate || endDate) {
       matchStage.date = {};
       if (startDate) {
-        // Use new Date() to ensure correct date object
         matchStage.date.$gte = new Date(startDate);
       }
       if (endDate) {
         const end = new Date(endDate);
-        // Set to the end of the day to include all records on that day
         end.setHours(23, 59, 59, 999);
         matchStage.date.$lte = end;
       }
     }
 
-    // --- Aggregation 1: Get Total Site Visits ---
-    const [totalStats] = await Analytics.aggregate([
+    // --- Aggregation 1: Total Visits ---
+    const visitsAggregation = await Analytics.aggregate([
       { $match: matchStage },
       {
         $group: {
-          _id: null, // Group all matched documents into one
+          _id: null,
           totalVisits: { $sum: "$totalVisits" },
         },
       },
     ]);
+    const totalVisits = visitsAggregation[0]?.totalVisits || 0;
 
-    // --- Aggregation 2: Get Top 10 Viewed Posts ---
+    // --- Aggregation 2: Top Posts (Dynamic Sort) ---
     const topPosts = await Analytics.aggregate([
       { $match: matchStage },
-
       { $unwind: "$postInteractions" }, 
-
       {
         $group: {
           _id: "$postInteractions.postId",
           totalViews: { $sum: "$postInteractions.views" },
         },
       },
-
-      { $sort: { totalViews: -1 } },
-      { $limit: 10 },
-
+      // Move Lookup UP so we can sort by date if needed
       {
-        // 6. Join with the 'posts' collection to get post details
         $lookup: {
           from: "posts", 
           localField: "_id",
@@ -105,39 +99,50 @@ const getAnalyticsSummary = asyncHandler (async (req, res) => {
           as: "postDetails",
         },
       },
-
       {
-        // 7. $lookup returns an array, so we unwind it
         $unwind: {
           path: "$postDetails",
-          preserveNullAndEmptyArrays: true 
+          preserveNullAndEmptyArrays: false 
         }
       },
-
+      // Dynamic Sort Step
+      { 
+        $sort: sortBy === 'date' 
+          ? { "postDetails.createdAt": -1 } // Sort by Newest Date
+          : { totalViews: -1 }              // Sort by Most Views (Default)
+      },
+      { $limit: 10 },
       {
-        // 8. Project to a clean output format
         $project: {
           _id: 0,
           postId: "$_id",
           views: "$totalViews",
-          title: "$postDetails.title", 
+          title: "$postDetails.title",
+          createdAt: "$postDetails.createdAt" // Return date for UI
         },
       },
     ]);
 
-    // 4. Send the final response
+    // --- Aggregation 3: Total Active Counts ---
+    const [totalPosts, totalServices] = await Promise.all([
+        Post.countDocuments({ isActive: true }),
+        Services.countDocuments({ isActive: true })
+    ]);
+
     return res.status(200).json(
       new ApiResponse(
-        200, 
+        200,
         {
-          totalVisits: totalStats?.totalVisits || 0,
+          totalVisits,
           topPosts,
+          totalPosts,
+          totalServices,
           dateRange: {
             startDate: startDate || 'all',
             endDate: endDate || 'all'
           }
-        }, 
-        "Analytics fetched successfully"
+        },
+        "Analytics summary fetched successfully"
       )
     );
 })
