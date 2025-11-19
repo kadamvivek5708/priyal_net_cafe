@@ -1,11 +1,8 @@
-// src/features/admin/pages/DashboardPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../auth/hooks/useAuth';
 import { getAnalyticsSummary } from '../api/adminAnalyticsApi';
 
 // Using your new UI Kit
-import { Button } from '../../../components/ui/Button';
 import { Card, CardHeader, CardBody } from '../../../components/ui/Card';
 import { Spinner } from '../../../components/ui/Spinner';
 

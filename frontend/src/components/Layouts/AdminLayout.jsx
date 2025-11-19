@@ -8,7 +8,8 @@ import {
   Briefcase, 
   LogOut, 
   Menu,
-  X
+  X,
+  FilePlus
 } from 'lucide-react';
 
 export const AdminLayout = () => {
@@ -21,9 +22,9 @@ export const AdminLayout = () => {
 
   const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Add Post', path: '/admin/posts/create', icon: FilePlus},
     { name: 'Manage Posts', path: '/admin/posts', icon: FileText },
     { name: 'Manage Services', path: '/admin/services', icon: Briefcase },
-    { name: 'Add Post', path: '/admin/posts/create', icon: Briefcase },
   ];
 
   return (

@@ -10,6 +10,7 @@ import LoginPage from '../features/auth/pages/LoginPage';
 import DashboardPage from '../features/admin/pages/DashboardPage';
 import { AdminLayout } from '../components/Layouts/AdminLayout';
 import CreatePostPage from '../features/admin/pages/CreatePostPage';
+import ManagePostsPage from '../features/admin/pages/ManagePostsPage';
 
 // Layouts
 import ProtectedRoute from '../components/Layouts/ProtectedRoute';
@@ -26,10 +27,8 @@ function AppRouter() {
         {/* Apply AdminLayout to all routes inside */}
         <Route element={<AdminLayout />}>
           <Route path="/admin/dashboard" element={<DashboardPage />} />
-          
-          {/* Future Routes (We will build these next) */}
-          {/* <Route path="/admin/posts" element={<ManagePostsPage />} /> */}
           <Route path="/admin/posts/create" element={<CreatePostPage />} />
+          <Route path="/admin/posts" element={<ManagePostsPage />} />
           {/* <Route path="/admin/services" element={<ManageServicesPage />} /> */}
         </Route>
       </Route>
