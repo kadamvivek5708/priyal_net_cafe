@@ -9,7 +9,7 @@ import {
   LogOut, 
   Menu,
   X,
-  FilePlus
+  FilePlus2,
 } from 'lucide-react';
 
 export const AdminLayout = () => {
@@ -22,8 +22,9 @@ export const AdminLayout = () => {
 
   const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
-    { name: 'Add Post', path: '/admin/posts/create', icon: FilePlus},
+    // { name: 'Add Post', path: '/admin/posts/create', icon: FilePlus2},
     { name: 'Manage Posts', path: '/admin/posts', icon: FileText },
+    // { name: 'Add Service', path: '/admin/services/create', icon: FilePlus2},
     { name: 'Manage Services', path: '/admin/services', icon: Briefcase },
   ];
 

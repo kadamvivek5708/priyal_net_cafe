@@ -79,9 +79,19 @@ const getAllServices = asyncHandler(async(req,res) => {
     
 })
 
+const getAdminServices = asyncHandler(async(req,res) => {
+    // Fetch ALL services, sorted by newest
+    const services = await Services.find({}).sort({ createdAt: -1 });
+    
+    return res  
+        .status(200)
+        .json(new ApiResponse(200, services, "All admin services fetched successfully"))
+})
+
 export {createService,
         updateService,
         deleteService,
         getAllServices,
-        getService
+        getService,
+        getAdminServices
 }

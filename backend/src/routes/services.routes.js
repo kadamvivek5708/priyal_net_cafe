@@ -4,13 +4,15 @@ import { createService,
          updateService,
          deleteService,
          getAllServices,
-         getService } from "../controllers/services.controller.js";
+         getService, 
+         getAdminServices} from "../controllers/services.controller.js";
 
 const router = Router()
 
 router.route("/create-service").post(verifyJWT, createService)
 router.route("/update-service/:serviceId").patch(verifyJWT, updateService)
 router.route("/delete-service/:serviceId").delete(verifyJWT, deleteService)
+router.route("/admin/get-all-services").get(verifyJWT,getAdminServices)
 
 router.route("/get-service/:serviceId").get(getService)
 router.route("/get-all-services").get(getAllServices)

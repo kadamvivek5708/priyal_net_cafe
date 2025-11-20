@@ -19,8 +19,8 @@ export const deletePost = async (postId) => {
 };
 
 export const getPostById = async (postId) => {
-  // Calls: GET /api/v1/post/get-post/:postId
-  const response = await apiClient.get(`/post/get-post/${postId}`);
+  // Calls: GET /api/v1/post/admin/get-post/:postId
+  const response = await apiClient.get(`/post/admin/get-post/${postId}`);
   return response.data;
 };
 
