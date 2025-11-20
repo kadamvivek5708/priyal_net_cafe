@@ -1,5 +1,10 @@
 import mongoose,{Schema} from "mongoose";
 
+const SeatSchema = new Schema({
+    post: { type: String, required: true },   
+    seats: { type: Number, required: true }    
+});
+
 const PostSchema = new Schema({
     title:{
         type:String,
@@ -7,20 +12,26 @@ const PostSchema = new Schema({
         trim: true
     },
     postName:{
-        type:String,
-        required:true
+        type:String
+    },
+    seatDetails:{
+        type: [SeatSchema],  
+        default: [],
     },
     ageLimit:{
-        type:String,
-        required:true
+        type:[String],
+        required:true,
+        default:[]
     },
     qualifications:{
-        type:String,
-        required:true
+        type:[String],
+        required:true,
+        default:[]
     },
     fees:{
-        type:String,
-        required:true
+        type:[String],
+        required:true,
+        default:[]
     },
     lastDate:{
         type:Date,
@@ -39,14 +50,21 @@ const PostSchema = new Schema({
         type:Date
     },
     documentsRequired:{
-        type:String
+        type:[String],
+        default:[]
     },
     source:{
         type:String
     },
+    totalSeats:{
+        type:Number
+    },
     isActive:{
         type: Boolean,
         default: true,
+    },
+    others:{
+        type:String
     },
 
     // Analytics for specific add

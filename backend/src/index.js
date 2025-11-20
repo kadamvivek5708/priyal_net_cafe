@@ -1,7 +1,7 @@
 import dotenv from "dotenv"
 import connectDB from "./db/index.js"
 import {app} from "./app.js"
-import { startPostCleanupJob } from "../../frontend/src/jobs/postCleanup.job.js"
+import { startPostCleanupJob } from "./jobs/postCleanup.job.js"
 
 dotenv.config({
     path: './.env'

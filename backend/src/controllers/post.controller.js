@@ -4,25 +4,48 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 const createPost = asyncHandler(async(req, res)=> {
-    const {title, postName, ageLimit, qualifications, fees, lastDate, category, startDate, documentsRequired, source, isActive} = req.body
-    const authorId = req.user?._id
-    const optionalFields = {};
+    const {title, postName,seatDetails, ageLimit, qualifications, fees, lastDate, category, startDate, documentsRequired, source, isActive,totalSeats, others} = req.body
 
-    if([title, postName, ageLimit, qualifications, fees, lastDate].some((field) => field?.trim === "")) {
-        throw new ApiError(400,"All fields are required")
+    const authorId = req.user?._id
+
+    // ---- VALIDATION FIXED ----
+    if (!title?.trim() || !lastDate) {
+        throw new ApiError(400, "title,lastDate are required");
     }
 
+    if (!Array.isArray(ageLimit) || ageLimit.length === 0) {
+        throw new ApiError(400, "ageLimit must be a non-empty array");
+    }
+
+    if (!Array.isArray(qualifications) || qualifications.length === 0) {
+        throw new ApiError(400, "qualifications must be a non-empty array");
+    }
+
+    if (!Array.isArray(fees) || fees.length === 0) {
+        throw new ApiError(400, "fees must be a non-empty array");
+    }
+
+    if (!Array.isArray(seatDetails) || seatDetails.length === 0) {
+        throw new ApiError(400, "seatDetails is required");
+    }
+
+    // optioinal fields
+    const optionalFields = {};
+
+    if (postName !== undefined) optionalFields.postName = postName;
     if (category !== undefined) optionalFields.category = category;
     if (startDate !== undefined) optionalFields.startDate = startDate;
     if (documentsRequired !== undefined) optionalFields.documentsRequired = documentsRequired;
     if (source !== undefined) optionalFields.source = source;
     if (isActive !== undefined) optionalFields.isActive = isActive;
+    if (totalSeats !== undefined) optionalFields.totalSeats = totalSeats;
+    if (others !== undefined) optionalFields.others = others;
     
 
     try {
         const newPost = await Post.create({
             title,
-            postName,
+            seatDetails,
             ageLimit,
             qualifications,
             fees,
@@ -55,10 +78,11 @@ const updatePost = asyncHandler(async(req, res)=> {
     if(!post){throw new ApiError(404,"Video not found or you don't have permissions")}
 
     // get the fields to update
-    const {title, postName, ageLimit, qualifications, fees, lastDate, category, startDate, documentsRequired, source, isActive} = req.body
+    const {title, postName,seatDetails, ageLimit, qualifications, fees, lastDate, category, startDate, documentsRequired, source, isActive,totalSeats,others} = req.body
 
     const fieldsToUpdate = {};
     if (title !== undefined) fieldsToUpdate.title = title;
+    if (seatDetails !== undefined) fieldsToUpdate.seatDetails = seatDetails;
     if (postName !== undefined) fieldsToUpdate.postName = postName;
     if (ageLimit !== undefined) fieldsToUpdate.ageLimit = ageLimit;
     if (qualifications !== undefined) fieldsToUpdate.qualifications = qualifications;
@@ -69,6 +93,8 @@ const updatePost = asyncHandler(async(req, res)=> {
     if (documentsRequired !== undefined) fieldsToUpdate.documentsRequired = documentsRequired;
     if (source !== undefined) fieldsToUpdate.source = source;
     if (isActive !== undefined) fieldsToUpdate.isActive = isActive;
+    if (totalSeats !== undefined) fieldsToUpdate.totalSeats = totalSeats;
+    if (others !== undefined) fieldsToUpdate.others = others;
 
     const updatedFields = await Post.findByIdAndUpdate(
         postId,

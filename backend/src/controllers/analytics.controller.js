@@ -12,44 +12,44 @@ const getStartOfToday = () => {
   return today;
 };
 
-const trackPostView = asyncHandler (async (req, res) => {
-    const { postId } = req.params;
+// const trackPostView = asyncHandler (async (req, res) => {
+//     const { postId } = req.params;
 
-    // 1. Validate the Post ID
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      throw new ApiError(400,"Invalid Post ID")
-    }
+//     // 1. Validate the Post ID
+//     if (!mongoose.Types.ObjectId.isValid(postId)) {
+//       throw new ApiError(400,"Invalid Post ID")
+//     }
 
-    const today = getStartOfToday();
-    const updatedDoc = await Analytics.findOneAndUpdate(
-      {
-        date: today,
-        "postInteractions.postId": postId,
-      },
-      {
-        $inc: { "postInteractions.$.views": 1 },
-      },
-      {
-        new:true
-      }
-    );
+//     const today = getStartOfToday();
+//     const updatedDoc = await Analytics.findOneAndUpdate(
+//       {
+//         date: today,
+//         "postInteractions.postId": postId,
+//       },
+//       {
+//         $inc: { "postInteractions.$.views": 1 },
+//       },
+//       {
+//         new:true
+//       }
+//     );
 
-    // 3. Step 2: If updatedDoc is null, the post wasn't in the array yet
-    if (!updatedDoc) {
-      await Analytics.findOneAndUpdate(
-        { date:today },
-        {
-          $push: { postInteractions: {postId, views: 1 } },
-        },
-        { 
-            upsert: true, 
-            new: true,
-            setDefaultsOnInsert:true
-        }
-      );
-    }
-    res.status(204).send();
-})
+//     // 3. Step 2: If updatedDoc is null, the post wasn't in the array yet
+//     if (!updatedDoc) {
+//       await Analytics.findOneAndUpdate(
+//         { date:today },
+//         {
+//           $push: { postInteractions: {postId, views: 1 } },
+//         },
+//         { 
+//             upsert: true, 
+//             new: true,
+//             setDefaultsOnInsert:true
+//         }
+//       );
+//     }
+//     res.status(204).send();
+// })
 
 const getAnalyticsSummary = asyncHandler (async (req, res) => {
 // 1. Get sortBy from query (default to 'views')
@@ -148,6 +148,6 @@ const getAnalyticsSummary = asyncHandler (async (req, res) => {
 })
 
 export {
-    trackPostView,
+    // trackPostView,
     getAnalyticsSummary
 }
