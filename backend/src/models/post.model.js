@@ -23,7 +23,7 @@ const PostSchema = new Schema({
         required:true
     },
     lastDate:{
-        type:String,
+        type:Date,
         required:true
     },
     author:{

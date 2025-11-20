@@ -1,6 +1,7 @@
 import dotenv from "dotenv"
 import connectDB from "./db/index.js"
 import {app} from "./app.js"
+import { startPostCleanupJob } from "../../frontend/src/jobs/postCleanup.job.js"
 
 dotenv.config({
     path: './.env'
@@ -8,6 +9,9 @@ dotenv.config({
 
 connectDB()
     .then(() => {
+        // cleanup of expired posts
+        startPostCleanupJob();
+
         app.on("error", (error) => {
             console.log("ERR0R: ", error);
             throw error

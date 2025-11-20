@@ -8,7 +8,7 @@ export const createPost = async (postData) => {
 
 export const getAllPosts = async () => {
   // Calls: GET /api/v1/post/get-all-posts
-  const response = await apiClient.get('/post/get-all-posts');
+  const response = await apiClient.get('/post/admin/get-all-posts');
   return response.data;
 };
 

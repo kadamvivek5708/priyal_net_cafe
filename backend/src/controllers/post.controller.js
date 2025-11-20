@@ -112,8 +112,40 @@ const getPostById = asyncHandler(async(req, res)=> {
         json(new ApiResponse(201,post,"Post fetched Successfully"))
 })
 
+const getAdminPosts = asyncHandler(async(req, res)=> {
+    // Fetch ALL posts (empty filter {}), sorted by newest first
+    const posts = await Post.find({}).sort({ createdAt: -1 });
+    
+    return res
+            .status(200)
+            .json(new ApiResponse(200,posts,"All admin posts fetched successfully"))
+})
+
+const deactivateExpiredPosts = async () => {
+  try {
+    const now = new Date();
+    // Find posts where lastDate is less than (<) now AND are currently active
+    const result = await Post.updateMany(
+      { 
+        lastDate: { $lt: now }, 
+        isActive: true 
+      },
+      { 
+        $set: { isActive: false } 
+      }
+    );
+    if(result.modifiedCount > 0) {
+        console.log(`Auto-Deactivator: Deactivated ${result.modifiedCount} expired posts.`);
+    }
+  } catch (error) {
+    console.error("Error running auto-deactivation:", error);
+  }
+};
+
 export{ getAllPosts, 
         getPostById, 
         createPost, 
         updatePost, 
-        deletePost}
+        deletePost,
+        getAdminPosts,
+        deactivateExpiredPosts}

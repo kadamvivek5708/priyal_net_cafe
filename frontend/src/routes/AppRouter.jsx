@@ -11,6 +11,7 @@ import DashboardPage from '../features/admin/pages/DashboardPage';
 import { AdminLayout } from '../components/Layouts/AdminLayout';
 import CreatePostPage from '../features/admin/pages/CreatePostPage';
 import ManagePostsPage from '../features/admin/pages/ManagePostsPage';
+import EditPostPage from '../features/admin/pages/EditPostPage';
 
 // Layouts
 import ProtectedRoute from '../components/Layouts/ProtectedRoute';
@@ -30,6 +31,7 @@ function AppRouter() {
           <Route path="/admin/posts/create" element={<CreatePostPage />} />
           <Route path="/admin/posts" element={<ManagePostsPage />} />
           {/* <Route path="/admin/services" element={<ManageServicesPage />} /> */}
+          <Route path="/admin/posts/edit/:postId" element={<EditPostPage />} />
         </Route>
       </Route>
 

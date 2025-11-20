@@ -1,27 +1,38 @@
 import { createContext, useContext, useState } from 'react';
 
-// 1. Create the context
 const AuthContext = createContext(null);
 
-// 2. Create the provider component
 export function AuthProvider({ children }) {
-  const [admin, setAdmin] = useState(null); // Or load from localStorage
-  const [token, setToken] = useState(null);
+  // 1. Initialize state from localStorage (Lazy initialization)
+  const [admin, setAdmin] = useState(() => {
+    const savedAdmin = localStorage.getItem('adminData');
+    return savedAdmin ? JSON.parse(savedAdmin) : null;
+  });
 
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem('accessToken') || null;
+  });
+
+  // 2. Login: Save to State AND localStorage
   const login = (adminData, authToken) => {
     setAdmin(adminData);
     setToken(authToken);
+    localStorage.setItem('adminData', JSON.stringify(adminData));
+    localStorage.setItem('accessToken', authToken);
   };
 
+  // 3. Logout: Clear State AND localStorage
   const logout = () => {
     setAdmin(null);
     setToken(null);
+    localStorage.removeItem('adminData');
+    localStorage.removeItem('accessToken');
   };
 
   const value = {
     admin,
     token,
-    isLoggedIn: !!admin,
+    isLoggedIn: !!token, // If we have a token, we are logged in
     login,
     logout,
   };
@@ -29,7 +40,6 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// 3. Create the custom hook to use the context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
