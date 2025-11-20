@@ -1,4 +1,3 @@
-// src/features/admin/pages/CreatePostPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPost } from '../api/adminPostsApi';
@@ -7,24 +6,28 @@ import { createPost } from '../api/adminPostsApi';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
 import { Card, CardHeader, CardBody } from '../../../components/ui/Card';
+import { TagsInput } from '../../../components/ui/TagsInput';
+import { SeatDetailsEditor } from '../components/SeatDetailsEditor';
 
 const CreatePostPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Initial State matches your Mongoose Post Schema
+  // Initial State updated for arrays
   const [formData, setFormData] = useState({
     title: '',
     postName: '',
-    category: 'भरती', // Default enum value
-    ageLimit: '',
-    qualifications: '',
-    fees: '',
+    category: 'भरती',
+    seatDetails: [{ post: '', seats: '' }], 
+    ageLimit: [], 
+    qualifications: [], 
+    fees: [], 
+    documentsRequired: [], 
     lastDate: '',
     startDate: '',
-    documentsRequired: '',
     source: '',
+    totalSeats: '', 
     isActive: true
   });
 
@@ -36,14 +39,40 @@ const CreatePostPage = () => {
     }));
   };
 
+  // Handler for TagsInput
+  const handleTagsChange = (field, newTags) => {
+    setFormData(prev => ({ ...prev, [field]: newTags }));
+  };
+
+  // Handler for SeatDetails
+  const handleSeatDetailsChange = (newSeatDetails) => {
+    setFormData(prev => ({ ...prev, seatDetails: newSeatDetails }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
+    // Basic validation for arrays
+    if (formData.ageLimit.length === 0) {
+        setError("Please add at least one Age Limit tag.");
+        setLoading(false);
+        return;
+    }
+    if (formData.qualifications.length === 0) {
+        setError("Please add at least one Qualification tag.");
+        setLoading(false);
+        return;
+    }
+    if (formData.fees.length === 0) {
+        setError("Please add at least one Fee tag.");
+        setLoading(false);
+        return;
+    }
+
     try {
       await createPost(formData);
-      // Redirect to post list after success
       navigate('/admin/posts'); 
     } catch (err) {
       console.error(err);
@@ -104,8 +133,23 @@ const CreatePostPage = () => {
               required
             />
 
-            {/* Row 2: Dates & Fees */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Seat Details Table */}
+            <SeatDetailsEditor 
+              value={formData.seatDetails}
+              onChange={handleSeatDetailsChange}
+            />
+
+            <Input
+                id="totalSeats"
+                label="Total Seats (Optional Summary)"
+                placeholder="e.g. 1000+"
+                type="number"
+                value={formData.totalSeats}
+                onChange={handleChange}
+            />
+
+            {/* Row 2: Dates */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input
                 id="startDate"
                 label="Start Date"
@@ -117,62 +161,60 @@ const CreatePostPage = () => {
                 id="lastDate"
                 label="Last Date *"
                 type="date"
-                placeholder="DD-MM-YYYY"
                 value={formData.lastDate}
                 onChange={handleChange}
                 required
               />
-              <Input
+            </div>
+
+            {/* Row 3: Array Fields (Tags) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <TagsInput
                 id="fees"
                 label="Fees *"
-                placeholder="e.g. Open: ₹500, OBC: ₹300"
+                placeholder="Type (e.g. Open: ₹500) & Enter"
                 value={formData.fees}
-                onChange={handleChange}
-                required
+                onChange={(tags) => handleTagsChange('fees', tags)}
               />
-            </div>
-
-            {/* Row 3: Criteria */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-               <Input
+              
+               <TagsInput
                 id="ageLimit"
                 label="Age Limit *"
-                placeholder="e.g. 18-27 Years"
+                placeholder="Type (e.g. 18-27 Years) & Enter"
                 value={formData.ageLimit}
-                onChange={handleChange}
-                required
-              />
-              <Input
-                id="qualifications"
-                label="Qualifications *"
-                placeholder="e.g. Any Graduate"
-                value={formData.qualifications}
-                onChange={handleChange}
-                required
+                onChange={(tags) => handleTagsChange('ageLimit', tags)}
               />
             </div>
 
-            {/* Row 4: Extra Info */}
-            <div className="space-y-4">
-               <Input
+            <TagsInput
+                id="qualifications"
+                label="Qualifications *"
+                placeholder="Type (e.g. Any Graduate) & Enter"
+                value={formData.qualifications}
+                onChange={(tags) => handleTagsChange('qualifications', tags)}
+            />
+
+            <TagsInput
                 id="documentsRequired"
                 label="Documents Required"
-                placeholder="e.g. Aadhar, Photo, Signature"
+                placeholder="Type (e.g. Aadhar Card) & Enter"
                 value={formData.documentsRequired}
-                onChange={handleChange}
-              />
-              <Input
+                onChange={(tags) => handleTagsChange('documentsRequired', tags)}
+            />
+
+            <Input
                 id="source"
                 label="Source / Official Link"
                 placeholder="https://..."
                 value={formData.source}
                 onChange={handleChange}
-              />
-            </div>
+            />
 
             {/* Error Display */}
             {error && (
-              <p className="text-sm text-red-600">{error}</p>
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded">
+                {error}
+              </div>
             )}
 
             {/* Actions */}
@@ -180,7 +222,7 @@ const CreatePostPage = () => {
                <Button 
                  type="button" 
                  variant="outline" 
-                 onClick={() => navigate('/admin/dashboard')}
+                 onClick={() => navigate('/admin/posts')}
                >
                  Cancel
                </Button>

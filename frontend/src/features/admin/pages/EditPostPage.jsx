@@ -5,8 +5,10 @@ import { getPostById, updatePost } from '../api/adminPostsApi';
 // UI Components
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
-import { Spinner } from '../../..//components/ui/Spinner';
-import { Card, CardHeader, CardBody } from '../../..//components/ui/Card';
+import { Spinner } from '../../../components/ui/Spinner';
+import { Card, CardHeader, CardBody } from '../../../components/ui/Card';
+import { TagsInput } from '../../../components/ui/TagsInput';
+import { SeatDetailsEditor } from '../components/SeatDetailsEditor';
 
 const EditPostPage = () => {
   const { postId } = useParams(); // Get ID from URL
@@ -16,18 +18,20 @@ const EditPostPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  // State matches the Create Post structure
+  // State matches the Create Post structure with arrays
   const [formData, setFormData] = useState({
     title: '',
     postName: '',
     category: 'भरती', 
-    ageLimit: '',
-    qualifications: '',
-    fees: '',
+    seatDetails: [],
+    ageLimit: [],
+    qualifications: [],
+    fees: [],
+    documentsRequired: [],
     lastDate: '',
     startDate: '',
-    documentsRequired: '',
     source: '',
+    totalSeats: '',
     isActive: true
   });
 
@@ -38,18 +42,27 @@ const EditPostPage = () => {
         const response = await getPostById(postId);
         if (response.success) {
             const data = response.data;
-            // Format dates if necessary, or just set data
+            
             setFormData({
                 title: data.title || '',
                 postName: data.postName || '',
                 category: data.category || 'भरती',
-                ageLimit: data.ageLimit || '',
-                qualifications: data.qualifications || '',
-                fees: data.fees || '',
-                lastDate: data.lastDate || '',
-                startDate: data.startDate ? data.startDate.split('T')[0] : '', // Format for date input
-                documentsRequired: data.documentsRequired || '',
+                
+                // Handle Seat Details (Ensure it's an array)
+                seatDetails: Array.isArray(data.seatDetails) ? data.seatDetails : [],
+
+                // Handle Tag Arrays (Ensure they are arrays)
+                ageLimit: Array.isArray(data.ageLimit) ? data.ageLimit : [],
+                qualifications: Array.isArray(data.qualifications) ? data.qualifications : [],
+                fees: Array.isArray(data.fees) ? data.fees : [],
+                documentsRequired: Array.isArray(data.documentsRequired) ? data.documentsRequired : [],
+                
+                // Format Dates for Input type="date" (YYYY-MM-DD)
+                lastDate: data.lastDate ? new Date(data.lastDate).toISOString().split('T')[0] : '',
+                startDate: data.startDate ? new Date(data.startDate).toISOString().split('T')[0] : '',
+                
                 source: data.source || '',
+                totalSeats: data.totalSeats || '',
                 isActive: data.isActive
             });
         }
@@ -66,6 +79,7 @@ const EditPostPage = () => {
     }
   }, [postId]);
 
+  // Handle basic input changes
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -74,10 +88,27 @@ const EditPostPage = () => {
     }));
   };
 
+  // Handler for TagsInput
+  const handleTagsChange = (field, newTags) => {
+    setFormData(prev => ({ ...prev, [field]: newTags }));
+  };
+
+  // Handler for SeatDetails
+  const handleSeatDetailsChange = (newSeatDetails) => {
+    setFormData(prev => ({ ...prev, seatDetails: newSeatDetails }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
+
+    // Basic validation before submitting
+    if (formData.ageLimit.length === 0) {
+        setError("Please ensure there is at least one Age Limit tag.");
+        setSubmitting(false);
+        return;
+    }
 
     try {
       // 2. Send Update Request
@@ -112,7 +143,7 @@ const EditPostPage = () => {
           </CardHeader>
           
           <CardBody className="space-y-6">
-            {/* Same Fields as Create Page */}
+            {/* Row 1: Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input
                 id="title"
@@ -148,7 +179,22 @@ const EditPostPage = () => {
               required
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Seat Details Editor */}
+            <SeatDetailsEditor 
+              value={formData.seatDetails}
+              onChange={handleSeatDetailsChange}
+            />
+
+            <Input
+                id="totalSeats"
+                label="Total Seats (Optional Summary)"
+                type="number"
+                value={formData.totalSeats}
+                onChange={handleChange}
+            />
+
+            {/* Row 2: Dates */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input
                 id="startDate"
                 label="Start Date"
@@ -164,46 +210,48 @@ const EditPostPage = () => {
                 onChange={handleChange}
                 required
               />
-              <Input
+            </div>
+
+            {/* Row 3: Array Fields (Tags) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <TagsInput
                 id="fees"
                 label="Fees *"
+                placeholder="Type & Enter"
                 value={formData.fees}
-                onChange={handleChange}
-                required
+                onChange={(tags) => handleTagsChange('fees', tags)}
               />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-               <Input
+               <TagsInput
                 id="ageLimit"
                 label="Age Limit *"
+                placeholder="Type & Enter"
                 value={formData.ageLimit}
-                onChange={handleChange}
-                required
-              />
-              <Input
-                id="qualifications"
-                label="Qualifications *"
-                value={formData.qualifications}
-                onChange={handleChange}
-                required
+                onChange={(tags) => handleTagsChange('ageLimit', tags)}
               />
             </div>
 
-            <div className="space-y-4">
-               <Input
+            <TagsInput
+                id="qualifications"
+                label="Qualifications *"
+                placeholder="Type & Enter"
+                value={formData.qualifications}
+                onChange={(tags) => handleTagsChange('qualifications', tags)}
+            />
+
+            <TagsInput
                 id="documentsRequired"
                 label="Documents Required"
+                placeholder="Type & Enter"
                 value={formData.documentsRequired}
-                onChange={handleChange}
-              />
-              <Input
-                id="source"
-                label="Source / Official Link"
-                value={formData.source}
-                onChange={handleChange}
-              />
-            </div>
+                onChange={(tags) => handleTagsChange('documentsRequired', tags)}
+            />
+
+            <Input
+              id="source"
+              label="Source / Official Link"
+              value={formData.source}
+              onChange={handleChange}
+            />
 
             {/* Active Checkbox */}
             <div className="flex items-center">
