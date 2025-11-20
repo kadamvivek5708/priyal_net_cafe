@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // Public Pages
-// import HomePage from '../pages/HomePage'; 
+import HomePage from '../pages/HomePage'; 
 // import NotFoundPage from '../pages/NotFoundPage'; 
 import LoginPage from '../features/auth/pages/LoginPage';
 
@@ -15,9 +15,13 @@ import EditPostPage from '../features/admin/pages/EditPostPage';
 import ManageServicesPage from '../features/admin/pages/ManageServicesPage';
 import CreateServicePage from '../features/admin/pages/CreateServicePage';
 import EditServicePage from '../features/admin/pages/EditServicePage';
+import PublicPostsPage from '../features/posts/pages/publicPostsPage';
+import PublicPostDetailPage from '../features/posts/pages/PostDetailPage';
+import PublicServicesPage from '../features/services/pages/ServicesPage';
 
 // Layouts
 import ProtectedRoute from '../components/Layouts/ProtectedRoute';
+import {PublicLayout}  from '../components/Layouts/PublicLayout';
 
 function AppRouter() {
   return (
@@ -42,6 +46,14 @@ function AppRouter() {
           <Route path="/admin/services" element={<ManageServicesPage />} />
           <Route path="/admin/services/edit/:serviceId" element={<EditServicePage/>} />
         </Route>
+      </Route>
+
+      {/* --- Public Routes --- */}
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/posts" element={<PublicPostsPage />} />
+        <Route path="/posts/:postId" element={<PublicPostDetailPage />} />
+        <Route path="/services" element={<PublicServicesPage />} />
       </Route>
 
       {/* --- Catch All --- */}
