@@ -127,7 +127,7 @@ const DashboardPage = () => {
                 </div>
               )}
 
-              {stats?.topPosts && stats.topPosts.length > 0 ? (
+              {stats?.topPosts && stats.topPosts.length >= 0 ? (
                 <ul className="divide-y divide-gray-200 dark:divide-gray-700">
                   {stats.topPosts.map((post) => (
                     <li key={post.postId} className="py-3 flex justify-between items-center">

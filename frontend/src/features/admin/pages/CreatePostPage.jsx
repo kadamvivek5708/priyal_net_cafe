@@ -116,7 +116,7 @@ const CreatePostPage = () => {
               <Input
                 id="lastDate"
                 label="Last Date *"
-                type="text" // Text allows "31 Dec 2025" or specific formats
+                type="date"
                 placeholder="DD-MM-YYYY"
                 value={formData.lastDate}
                 onChange={handleChange}

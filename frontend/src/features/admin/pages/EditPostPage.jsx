@@ -159,6 +159,7 @@ const EditPostPage = () => {
               <Input
                 id="lastDate"
                 label="Last Date *"
+                type="date"
                 value={formData.lastDate}
                 onChange={handleChange}
                 required
