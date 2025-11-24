@@ -35,6 +35,9 @@ export const PublicLayout = () => {
               <Link to="/services" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">
                 Services
               </Link>
+              <Link to="/contact" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">
+                Contact
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}

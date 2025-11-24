@@ -11,3 +11,8 @@ export const getPublicPostById = async (postId) => {
   const response = await apiClient.get(`/post/get-post/${postId}`);
   return response.data;
 };
+
+export const getExpiredPosts = async () => {
+  const response = await apiClient.get('/post/get-expired-posts');
+  return response.data;
+};

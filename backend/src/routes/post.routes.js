@@ -4,7 +4,8 @@ import { createPost,
         getPostById, 
         updatePost,
         getAdminPosts, 
-        deactivateExpiredPosts} from "../controllers/post.controller.js";
+        deactivateExpiredPosts,
+        getExpiredPosts} from "../controllers/post.controller.js";
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { trackPostVisit } from "../middlewares/trackPostViews.middleware.js";
@@ -21,6 +22,7 @@ router.route("/admin/get-post/:postId").get(verifyJWT, getPostById)
 // routes for everyone
 router.route("/get-post/:postId").get(trackPostVisit,getPostById)
 router.route("/get-all-posts").get(getAllPosts)
+router.route("/get-expired-posts").get(getExpiredPosts)
 
 // auto deactivate
 router.route("/deactivateExpiredPosts").patch(deactivateExpiredPosts)

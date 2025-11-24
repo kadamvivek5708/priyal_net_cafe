@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getPublicPosts } from '../api/postsApi';
-import { Search, Filter, Calendar, User } from 'lucide-react';
+// FIX: Use @ alias for API import
+import { getPublicPosts } from '../../../features/posts/api/postsApi';
+import { Search, Calendar, Archive } from 'lucide-react'; // Added Archive icon
+// FIX: Use @ alias for Component imports
 import { Button } from '../../../components/ui/Button';
 import { Spinner } from '../../../components/ui/Spinner';
 
@@ -71,7 +73,7 @@ const PublicPostsPage = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         
-        {/* Header */}
+        {/* Header with Archive Link */}
         <div className="text-center mb-12">
           <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">
             Latest Job Updates
@@ -79,6 +81,16 @@ const PublicPostsPage = () => {
           <p className="mt-4 text-xl text-gray-500 dark:text-gray-400">
             Find the latest government jobs, exam results, and online forms here.
           </p>
+          
+          {/* Archive Link Button */}
+          <div className="mt-6">
+            <Link to="/posts/past">
+              <Button variant="outline" className="text-blue-600 border-blue-200 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/20">
+                <Archive size={16} className="mr-2" />
+                View Past / Expired Jobs
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Search & Filter Section */}
@@ -99,7 +111,7 @@ const PublicPostsPage = () => {
               />
             </div>
 
-            {/* Category Tabs (Desktop) / Dropdown (Mobile) */}
+            {/* Category Tabs */}
             <div className="w-full md:w-auto overflow-x-auto pb-2 md:pb-0 no-scrollbar">
               <div className="flex space-x-2">
                 {categories.map((cat) => (

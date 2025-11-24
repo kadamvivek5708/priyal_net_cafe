@@ -168,10 +168,24 @@ const deactivateExpiredPosts = async () => {
   }
 };
 
+const getExpiredPosts = asyncHandler(async(req, res)=> {
+    const today = new Date();
+    const posts = await Post.find({
+        $or: [
+            { lastDate: { $lt: today } },
+            { isActive: false }
+        ]
+    }).sort({ lastDate: -1 });
+    
+    return res.status(200).json(new ApiResponse(200, posts, "Expired posts fetched successfully"));
+})
+
 export{ getAllPosts, 
         getPostById, 
         createPost, 
         updatePost, 
         deletePost,
         getAdminPosts,
-        deactivateExpiredPosts}
+        deactivateExpiredPosts,
+        getExpiredPosts,
+    }
