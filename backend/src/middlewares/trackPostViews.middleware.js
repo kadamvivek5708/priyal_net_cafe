@@ -1,5 +1,6 @@
 import { ApiError } from "../utils/apiError.js";
 import { Analytics } from "../models/analytics.model.js";
+import { Post } from "../models/post.model.js"; // Import Post model
 import mongoose from "mongoose";
 
 const getStartOfToday = () => {
@@ -16,6 +17,12 @@ export const trackPostVisit = async (req, res, next) => {
         if (!mongoose.Types.ObjectId.isValid(postId)) {
           throw new ApiError(400,"Invalid Post ID")
         }
+
+        // --- FIX START: Increment the global counter on the Post model ---
+        await Post.findByIdAndUpdate(postId, { 
+            $inc: { postViews: 1 } 
+        });
+        // --- FIX END ---
     
         const today = getStartOfToday();
         const updatedDoc = await Analytics.findOneAndUpdate(
@@ -32,7 +39,6 @@ export const trackPostVisit = async (req, res, next) => {
           }
         ).exec();
     
-        // 3. Step 2: If updatedDoc is null, the post wasn't in the array yet
         if (!updatedDoc) {
           await Analytics.findOneAndUpdate(
             { date:today },

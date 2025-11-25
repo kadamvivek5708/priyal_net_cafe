@@ -1,7 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { trackVisitMiddleware } from "./middlewares/analytics.middleware.js";
 
 const app = express();
 
@@ -24,7 +23,7 @@ import userRouter from "./routes/user.routes.js"
 app.use("/api/v1/admin", userRouter)
 
 import postRouter from "./routes/post.routes.js"
-app.use("/api/v1/post",trackVisitMiddleware, postRouter)
+app.use("/api/v1/post", postRouter)
 
 import servicesRouter from "./routes/services.routes.js"
 app.use("/api/v1/services", servicesRouter)

@@ -21,8 +21,8 @@ router.route("/admin/get-post/:postId").get(verifyJWT, getPostById)
 
 // routes for everyone
 router.route("/get-post/:postId").get(trackPostVisit,getPostById)
-router.route("/get-all-posts").get(getAllPosts)
-router.route("/get-expired-posts").get(getExpiredPosts)
+router.route("/get-all-posts").get(trackPostVisit,getAllPosts)
+router.route("/get-expired-posts").get(trackPostVisit,getExpiredPosts)
 
 // auto deactivate
 router.route("/deactivateExpiredPosts").patch(deactivateExpiredPosts)
