@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-// FIX: Use @ alias for API import
-import { getPublicPosts } from '../../../features/posts/api/postsApi';
-import { Search, Calendar, Archive } from 'lucide-react'; // Added Archive icon
-// FIX: Use @ alias for Component imports
+import { getPublicPosts } from '../../posts/api/postsApi';
+import { Search, Calendar, Archive } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { Spinner } from '../../../components/ui/Spinner';
 
@@ -70,61 +68,60 @@ const PublicPostsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         
-        {/* Header with Archive Link */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">
-            Latest Job Updates
-          </h1>
-          <p className="mt-4 text-xl text-gray-500 dark:text-gray-400">
-            Find the latest government jobs, exam results, and online forms here.
-          </p>
-          
-          {/* Archive Link Button */}
-          <div className="mt-6">
-            <Link to="/posts/past">
-              <Button variant="outline" className="text-blue-600 border-blue-200 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/20">
-                <Archive size={16} className="mr-2" />
-                View Past / Expired Jobs
-              </Button>
-            </Link>
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              नोकरी अपडेट्स
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
+              सरकारी नोकऱ्या, परीक्षा निकाल आणि ऑनलाइन फॉर्मची माहिती
+            </p>
           </div>
+          
+          <Link to="/posts/past">
+            <Button variant="outline" className="text-blue-600 border-blue-200 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/20 whitespace-nowrap">
+              <Archive size={16} className="mr-2" />
+              जुन्या / संपलेल्या जाहिराती पहा
+            </Button>
+          </Link>
         </div>
 
-        {/* Search & Filter Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-8">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+        {/* Search & Filter Bar */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 mb-8 sticky top-20 z-40 border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
             
             {/* Search Input */}
-            <div className="relative w-full md:w-1/2">
+            <div className="relative w-full md:w-1/3">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
               <input
                 type="text"
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out"
-                placeholder="Search for jobs (e.g. SSC, Police, Clerk)..."
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out"
+                placeholder="शोधा (उदा. तलाठी, पोलीस, लिपिक)..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
             {/* Category Tabs */}
-            <div className="w-full md:w-auto overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+            <div className="w-full md:w-2/3 overflow-x-auto pb-1 md:pb-0 no-scrollbar">
               <div className="flex space-x-2">
                 {categories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-200 ${
+                    className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-200 border ${
                       selectedCategory === cat
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700'
                     }`}
                   >
-                    {cat}
+                    {cat === 'All' ? 'सर्व' : cat}
                   </button>
                 ))}
               </div>
@@ -132,67 +129,74 @@ const PublicPostsPage = () => {
           </div>
         </div>
 
-        {/* Posts Grid */}
+        {/* Posts Grid - Focused on Cards */}
         {filteredPosts.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredPosts.map((post) => (
               <div 
                 key={post._id} 
-                className="flex flex-col bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 dark:border-gray-700"
+                className="group flex flex-col bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden h-full"
               >
-                <div className="p-6 flex-1 flex flex-col">
-                  <div className="flex justify-between items-start mb-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                <div className="p-5 flex-1 flex flex-col relative">
+                  {/* Category Badge */}
+                  <div className="absolute top-4 right-4">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-100 dark:border-blue-800">
                       {post.category}
                     </span>
-                    <span className="text-xs text-gray-500 flex items-center" title="Post Date">
-                      <Calendar size={14} className="mr-1" />
-                      {formatDate(post.createdAt)}
-                    </span>
+                  </div>
+
+                  {/* Date */}
+                  <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center mb-3">
+                    <Calendar size={14} className="mr-1" />
+                    {formatDate(post.createdAt)}
                   </div>
                   
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
+                  {/* Title */}
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
                     <Link to={`/posts/${post._id}`}>
                       {post.title}
                     </Link>
                   </h3>
                   
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3 flex-1">
+                  {/* Post Name */}
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2 flex-1">
                     {post.postName}
                   </p>
 
-                  <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span className="text-gray-500 dark:text-gray-400">Last Date:</span>
-                        <span className="font-medium text-red-600 dark:text-red-400">
+                  {/* Important Meta Info */}
+                  <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-500 dark:text-gray-400">अंतिम तारीख:</span>
+                        <span className="font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded">
                             {formatDate(post.lastDate)}
                         </span>
                     </div>
                   </div>
                 </div>
                 
-                <div className="bg-gray-50 dark:bg-gray-700/30 px-6 py-3">
-                   <Link to={`/posts/${post._id}`} className="block">
-                     <Button variant="outline" className="w-full justify-center border-blue-200 text-blue-700 hover:bg-blue-50 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-900/20">
-                       View Full Details
-                     </Button>
-                   </Link>
-                </div>
+                {/* Action Button */}
+                <Link to={`/posts/${post._id}`} className="block w-full">
+                  <div className="bg-gray-50 dark:bg-gray-700/50 px-5 py-3 text-center border-t border-gray-200 dark:border-gray-700 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors">
+                     <span className="text-sm font-medium text-blue-700 dark:text-blue-300 group-hover:text-blue-800 dark:group-hover:text-blue-200">
+                       सविस्तर माहिती पहा &rarr;
+                     </span>
+                  </div>
+                </Link>
               </div>
             ))}
           </div>
         ) : (
           <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-dashed border-gray-300 dark:border-gray-700">
-            <div className="mx-auto h-12 w-12 text-gray-400">
-              <Search size={48} />
+            <div className="mx-auto h-12 w-12 text-gray-400 mb-4">
+              <Search size={48} strokeWidth={1.5} />
             </div>
-            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No posts found</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">कोणतीही माहिती सापडली नाही</h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Try adjusting your search or filter to find what you're looking for.
+              कृपया वेगळ्या शब्दांचा वापर करून शोधा किंवा फिल्टर बदला.
             </p>
             <div className="mt-6">
-              <Button onClick={() => {setSearchTerm(''); setSelectedCategory('All');}}>
-                Clear Filters
+              <Button variant="outline" onClick={() => {setSearchTerm(''); setSelectedCategory('All');}}>
+                फिल्टर काढा (Clear)
               </Button>
             </div>
           </div>

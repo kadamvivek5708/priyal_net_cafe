@@ -20,6 +20,8 @@ import PublicPostDetailPage from '../features/posts/pages/PostDetailPage';
 import PublicServicesPage from '../features/services/pages/ServicesPage';
 import ContactPage from '../pages/ContactPage';
 import PastPostsPage from '../features/posts/pages/PastPostPage'
+import AdminPostDetailPage from '../features/admin/pages/AdminPostDetailPage';
+import AdminServiceDetailPage from '../features/admin/pages/AdminServiceDetailPage';
 
 // Layouts
 import ProtectedRoute from '../components/Layouts/ProtectedRoute';
@@ -37,11 +39,14 @@ function AppRouter() {
         {/* Apply AdminLayout to all routes inside */}
         <Route element={<AdminLayout />}>
           <Route path="/admin/dashboard" element={<DashboardPage />} />
+          <Route path="/admin" element={<DashboardPage />} />
 
           {/* Post Routes */}
           <Route path="/admin/posts/create" element={<CreatePostPage />} />
           <Route path="/admin/posts" element={<ManagePostsPage />} />
           <Route path="/admin/posts/edit/:postId" element={<EditPostPage />} />
+          <Route path="/admin/posts/:postId" element={<AdminPostDetailPage />} />
+          <Route path="/admin/services/:serviceId" element={<AdminServiceDetailPage />} />
 
           {/* Services Routes */}
           <Route path="/admin/services/create" element={<CreateServicePage />} />

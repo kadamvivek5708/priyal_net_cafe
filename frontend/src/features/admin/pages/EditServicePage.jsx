@@ -110,7 +110,7 @@ const EditServicePage = () => {
             
             <Input 
               id="name" 
-              label="Service Name *" 
+              label="सेवेचे नाव *" 
               value={formData.name} 
               onChange={handleChange} 
               required 
@@ -119,14 +119,14 @@ const EditServicePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input 
                 id="fees" 
-                label="Fees *" 
+                label="फी *" 
                 value={formData.fees} 
                 onChange={handleChange} 
                 required 
               />
               <Input 
                 id="processingTime" 
-                label="Processing Time" 
+                label="कालावधी *" 
                 value={formData.processingTime} 
                 onChange={handleChange} 
               />
@@ -135,7 +135,7 @@ const EditServicePage = () => {
             {/* TagsInput for Documents */}
             <TagsInput
                 id="documentsRequired"
-                label="Documents Required *"
+                label="आवश्यक कागदपत्रे *"
                 placeholder="Type & Enter"
                 value={formData.documentsRequired}
                 onChange={handleTagsChange}

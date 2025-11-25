@@ -19,7 +19,7 @@ export const PublicLayout = () => {
                 {/* You can use your logo image here */}
                 <img src="/logo.png" alt="Logo" className="h-10 w-auto mr-2 rounded-full" />
                 <span className="text-xl font-bold text-gray-900 dark:text-white">
-                  Priyal Net Cafe
+                  प्रियल नेट कॅफे
                 </span>
               </Link>
             </div>
@@ -27,16 +27,16 @@ export const PublicLayout = () => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               <Link to="/" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">
-                Home
+                होम 
               </Link>
               <Link to="/posts" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">
-                Updates / Jobs
+                नोकरी अपडेट्स
               </Link>
               <Link to="/services" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">
-                Services
+                ईतर सेवा
               </Link>
               <Link to="/contact" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">
-                Contact
+                संपर्क 
               </Link>
             </div>
 

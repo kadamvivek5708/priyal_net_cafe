@@ -62,7 +62,7 @@ const CreateServicePage = () => {
   return (
     <div className="max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
-        Add New Service
+        नवीन सेवा जोडा...
       </h1>
 
       <form onSubmit={handleSubmit}>
@@ -74,7 +74,7 @@ const CreateServicePage = () => {
             
             <Input 
               id="name" 
-              label="Service Name *" 
+              label="सेवेचे नाव  *" 
               placeholder="e.g. Shop Act License"
               value={formData.name} 
               onChange={handleChange} 
@@ -84,7 +84,7 @@ const CreateServicePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input 
                 id="fees" 
-                label="Fees *" 
+                label="फी  *" 
                 placeholder="e.g. ₹500"
                 value={formData.fees} 
                 onChange={handleChange} 
@@ -92,7 +92,7 @@ const CreateServicePage = () => {
               />
               <Input 
                 id="processingTime" 
-                label="Processing Time" 
+                label="कालावधी *" 
                 placeholder="e.g. 2-3 Days" 
                 value={formData.processingTime} 
                 onChange={handleChange} 
@@ -102,7 +102,7 @@ const CreateServicePage = () => {
             {/* Using TagsInput for Documents */}
             <TagsInput
                 id="documentsRequired"
-                label="Documents Required *"
+                label="आवश्यक कागदपत्रे *"
                 placeholder="Type (e.g. Aadhar Card) & Enter"
                 value={formData.documentsRequired}
                 onChange={handleTagsChange}

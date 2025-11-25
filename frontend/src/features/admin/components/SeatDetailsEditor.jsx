@@ -34,15 +34,15 @@ export const SeatDetailsEditor = ({ value = [], onChange, error }) => {
   return (
     <div className="w-full space-y-2">
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Seat Details *
+        जागांची तपशील *
       </label>
       
       <div className="overflow-hidden border border-gray-300 dark:border-gray-700 rounded-md">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Post Name</th>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-32">Seats</th>
+              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">नाव </th>
+              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-32">जागा </th>
               <th className="px-4 py-2 w-16"></th>
             </tr>
           </thead>
@@ -52,7 +52,7 @@ export const SeatDetailsEditor = ({ value = [], onChange, error }) => {
                 <td className="px-4 py-2">
                   <input
                     type="text"
-                    placeholder="e.g. Junior Clerk"
+                    placeholder="उदा. जूनियर क्लर्क "
                     className="w-full border-0 p-1 bg-transparent focus:ring-0 text-sm dark:text-white placeholder-gray-400 focus:outline-none"
                     value={row.post}
                     onChange={(e) => handleChange(index, 'post', e.target.value)}

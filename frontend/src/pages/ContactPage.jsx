@@ -7,7 +7,7 @@ const ContactPage = () => {
     instagram: "https://www.instagram.com/priyal_net_cafe",
     whatsapp: "https://wa.me/917709577531",
     address: "Near ST Stand, Islampur, Maharashtra",
-    mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3810.608664432246!2d74.2564!3d17.0435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDAyJzM2LjYiTiA3NMKwMTUnMjMuMCJF!5e0!3m2!1sen!2sin!4v1631234567890!5m2!1sen!2sin" 
+    mapUrl: "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d189.77084153275454!2d74.259835!3d17.046542!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDAyJzQ3LjYiTiA3NMKwMTUnMzUuNCJF!5e0!3m2!1sen!2sin!4v1732533800000!5m2!1sen!2sin" 
   };
 
   return (
@@ -78,11 +78,11 @@ const ContactPage = () => {
             <Card>
               <CardBody className="space-y-6">
                 <div className="flex items-start space-x-4">
-                  <MapPin className="text-red-500 mt-1 flex-shrink-0" size={24} />
+                  <MapPin className="text-red-500 mt-1 shrink-0" size={24} />
                   <div>
-                    <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1">पत्ता (Address)</h3>
+                    <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1">पत्ता </h3>
                     <p className="text-gray-600 dark:text-gray-300">
-                      प्रियाल नेट कॅफे,<br />
+                      प्रियल नेट कॅफे ,<br />
                       एस.टी. स्टँड शेजारी,<br />
                       इस्लामपूर, महाराष्ट्र - 415409
                     </p>
@@ -90,12 +90,13 @@ const ContactPage = () => {
                 </div>
 
                 <div className="flex items-start space-x-4">
-                  <Clock className="text-purple-500 mt-1 flex-shrink-0" size={24} />
+                  <Clock className="text-purple-500 mt-1 shrink-0" size={24} />
                   <div>
-                    <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1">वेळ (Timings)</h3>
+                    <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1">वेळ </h3>
                     <div className="space-y-1 text-gray-600 dark:text-gray-300">
-                      <p className="flex justify-between w-48"><span>सोम - शनि:</span> <span>9:00 AM - 8:00 PM</span></p>
-                      <p className="flex justify-between w-48"><span>रविवार:</span> <span>बंद (Closed)</span></p>
+                      <p className="flex justify-between w-48">9:00 AM - 6:00 PM</p>
+                      <p className="flex justify-between w-48">सोमवार  - शनिवार </p>
+                      <p className="flex justify-between w-48"><span>रविवार : बंद राहील </span></p>
                     </div>
                   </div>
                 </div>

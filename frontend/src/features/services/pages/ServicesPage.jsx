@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getPublicServices } from '../api/servicesApi';
+import { getPublicServices } from '../../services/api/servicesApi';
 import { Search, Clock, IndianRupee, FileText, CheckCircle } from 'lucide-react';
 import { Spinner } from '../../../components/ui/Spinner';
 import { Button } from '../../../components/ui/Button';
@@ -48,7 +48,7 @@ const PublicServicesPage = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setTimeout(() => setSelectedService(null), 200); // Clear after animation
+    setTimeout(() => setSelectedService(null), 200); 
   };
 
   if (loading) {
@@ -66,77 +66,81 @@ const PublicServicesPage = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">
-            Our Services
+            ईतर सेवा...
           </h1>
           <p className="mt-4 text-xl text-gray-500 dark:text-gray-400">
-            Digital solutions for all your needs, at affordable prices.
+            सर्व प्रकारच्या डिजिटल सेवा माफक दरात उपलब्ध.
           </p>
         </div>
 
         {/* Search Bar */}
-        <div className="max-w-md mx-auto mb-10">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <div className="max-w-md mx-auto mb-10 sticky top-20 z-30">
+          <div className="relative shadow-md rounded-full">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-gray-400" />
             </div>
             <input
               type="text"
-              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-full leading-5 bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm shadow-sm transition duration-150 ease-in-out"
-              placeholder="Search services (e.g. Pan Card, Aadhar)..."
+              className="block w-full pl-11 pr-4 py-3 border border-gray-200 rounded-full leading-5 bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out"
+              placeholder="सेवा शोधा (उदा. पॅन कार्ड, आधार)..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
 
-        {/* Services Grid */}
+        {/* Services Grid - Focused on Cards */}
         {filteredServices.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredServices.map((service) => (
               <div 
                 key={service._id} 
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col"
+                className="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col overflow-hidden h-full"
               >
-                <div className="p-6 flex-1">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                      {/* Placeholder Icon - Ideally mapped dynamically */}
-                      <FileText className="text-blue-600 dark:text-blue-400" size={24} />
-                    </div>
-                    {service.processingTime && (
-                      <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                        <Clock size={12} className="mr-1" />
-                        {service.processingTime}
-                      </span>
-                    )}
+                <div className="p-6 flex-1 flex flex-col items-center text-center relative">
+                  
+                  {/* Icon Circle */}
+                  <div className="h-14 w-14 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <FileText size={28} strokeWidth={1.5} />
                   </div>
 
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                  {/* Service Name */}
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
                     {service.name}
                   </h3>
 
-                  <div className="flex items-center text-gray-700 dark:text-gray-300 font-medium mb-4">
-                    <IndianRupee size={16} className="mr-1" />
+                  {/* Processing Time Badge */}
+                  {service.processingTime && (
+                    <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 mb-4">
+                      <Clock size={12} className="mr-1" />
+                      {service.processingTime}
+                    </div>
+                  )}
+
+                  {/* Fees */}
+                  <div className="mt-auto flex items-center justify-center text-gray-900 dark:text-white font-bold text-xl">
+                    <IndianRupee size={18} className="mr-1 text-gray-400" />
                     {service.fees}
                   </div>
                 </div>
 
-                <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700/30 border-t border-gray-100 dark:border-gray-700 rounded-b-xl">
+                {/* Action Footer */}
+                <div className="p-4 bg-gray-50 dark:bg-gray-700/30 border-t border-gray-100 dark:border-gray-700">
                    <Button 
                      variant="outline" 
                      size="sm" 
-                     className="w-full border-blue-200 text-blue-700 hover:bg-blue-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                     className="w-full border-blue-200 text-blue-700 hover:bg-blue-600 hover:text-white dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-700 transition-colors"
                      onClick={() => openDocumentsModal(service)}
                    >
-                     View Required Documents
+                     कागदपत्रे पहा
                    </Button>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 text-gray-500">
-            No services found matching "{searchTerm}".
+          <div className="text-center py-12 text-gray-500 bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
+            <p>"{searchTerm}" साठी कोणतीही सेवा सापडली नाही.</p>
           </div>
         )}
 
@@ -146,41 +150,54 @@ const PublicServicesPage = () => {
           onClose={closeModal} 
           title={selectedService?.name || 'Service Details'}
         >
-           <div className="space-y-4">
-             <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <span className="text-sm text-blue-700 dark:text-blue-300 font-medium">Service Fees</span>
-                <span className="text-lg font-bold text-blue-800 dark:text-blue-200">₹ {selectedService?.fees}</span>
+           <div className="space-y-5">
+             
+             {/* Modal Header Info */}
+             <div className="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
+                <div>
+                    <span className="block text-xs text-blue-600 dark:text-blue-400 uppercase font-bold">फी </span>
+                    <span className="text-xl font-bold text-blue-900 dark:text-blue-100">₹ {selectedService?.fees}</span>
+                </div>
+                {selectedService?.processingTime && (
+                    <div className="text-right">
+                        <span className="block text-xs text-blue-600 dark:text-blue-400 uppercase font-bold">कालावधी </span>
+                        <span className="text-sm font-medium text-blue-900 dark:text-blue-100">{selectedService.processingTime}</span>
+                    </div>
+                )}
              </div>
 
+             {/* Documents List */}
              <div>
-               <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                 Documents Required:
+               <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center">
+                 <FileText size={16} className="mr-2 text-gray-500" />
+                 आवश्यक कागदपत्रे :
                </h4>
                {selectedService?.documentsRequired && selectedService.documentsRequired.length > 0 ? (
-                 <ul className="space-y-2">
+                 <ul className="space-y-2 bg-gray-50 dark:bg-gray-700/30 p-4 rounded-lg">
                    {selectedService.documentsRequired.map((doc, idx) => (
-                     <li key={idx} className="flex items-start text-sm text-gray-600 dark:text-gray-300">
-                       <CheckCircle size={16} className="text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                     <li key={idx} className="flex items-start text-sm text-gray-700 dark:text-gray-300">
+                       <CheckCircle size={16} className="text-green-500 mr-2 mt-0.5 shrink-0" />
                        {doc}
                      </li>
                    ))}
                  </ul>
                ) : (
-                 <p className="text-sm text-gray-500 italic">No specific documents listed.</p>
+                 <p className="text-sm text-gray-500 italic pl-4">कागदपत्रांची माहिती उपलब्ध नाही.</p>
                )}
              </div>
 
-             <div className="pt-4 mt-4 border-t border-gray-100 dark:border-gray-700 text-center">
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                  Ready to apply? Visit our center.
+             {/* Modal Actions */}
+             <div className="pt-4 border-t border-gray-100 dark:border-gray-700 text-center">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                  अर्ज करण्यासाठी आमच्या केंद्राला भेट द्या किंवा WhatsApp करा.
                 </p>
                 <a 
-                  href={`https://wa.me/917709577531?text=Hi, I need help with ${selectedService?.name}`}
+                  href={`https://wa.me/917709577531?text=नमस्कार , मला ${selectedService?.name} काढण्यासाठी  मदत हवी आहे.`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm font-medium transition-colors"
+                  className="block w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold text-center transition-colors shadow-sm hover:shadow-md"
                 >
-                  Inquire on WhatsApp
+                  WhatsApp वर चौकशी करा
                 </a>
              </div>
            </div>
