@@ -14,6 +14,10 @@ app.use(express.urlencoded({extended:true, limit : "16kb"}))
 app.use(express.static("public"))
 app.use(cookieParser())
 
+app.get("/", (req, res) => {
+    res.send("<h1>Server is Running! 🚀</h1>");
+});
+
 // Router routes
 
 import healthcheckRouter from "./routes/healthcheck.routes.js"
