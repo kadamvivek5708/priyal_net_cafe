@@ -22,6 +22,7 @@ import ContactPage from '../pages/ContactPage';
 import PastPostsPage from '../features/posts/pages/PastPostPage'
 import AdminPostDetailPage from '../features/admin/pages/AdminPostDetailPage';
 import AdminServiceDetailPage from '../features/admin/pages/AdminServiceDetailPage';
+import ScrollToTop from '../components/ui/ScrollToTop';
 
 // Layouts
 import ProtectedRoute from '../components/Layouts/ProtectedRoute';
@@ -29,7 +30,10 @@ import {PublicLayout}  from '../components/Layouts/PublicLayout';
 
 function AppRouter() {
   return (
+    <>
+    <ScrollToTop />
     <Routes>
+      
       {/* --- Public Routes --- */}
       {/* <Route path="/" element={<HomePage />} /> */}
       <Route path="/login" element={<LoginPage />} />
@@ -69,6 +73,7 @@ function AppRouter() {
       {/* --- Catch All --- */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    </>
   );
 }
 

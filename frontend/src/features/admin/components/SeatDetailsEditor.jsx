@@ -1,102 +1,118 @@
-import React from 'react';
-import { Plus, Trash2 } from 'lucide-react';
-import { Button } from '../../../components/ui/Button';
+import React, { useEffect } from "react";
+import { Plus, Trash2 } from "lucide-react";
+import { Button } from "../../../components/ui/Button";
 
 export const SeatDetailsEditor = ({ value = [], onChange, error }) => {
-  // Ensure there is at least one row to start if empty
-  React.useEffect(() => {
+  // Ensure at least one row exists
+  useEffect(() => {
     if (value.length === 0) {
-      onChange([{ post: '', seats: '' }]);
+      onChange([{ post: "", seats: "" }]);
     }
   }, []);
 
-  const handleAddRow = () => {
-    onChange([...value, { post: '', seats: '' }]);
+  const addRow = () => {
+    onChange([...value, { post: "", seats: "" }]);
   };
 
-  const handleRemoveRow = (index) => {
-    // Prevent removing the last remaining row if you want to enforce at least one
+  const removeRow = (index) => {
     if (value.length > 1) {
       onChange(value.filter((_, i) => i !== index));
     }
   };
 
-  const handleChange = (index, field, newVal) => {
-    const updated = value.map((row, i) => {
-      if (i === index) {
-        return { ...row, [field]: newVal };
-      }
-      return row;
-    });
+  const updateRow = (index, field, val) => {
+    const updated = [...value];
+    updated[index][field] = val;
     onChange(updated);
   };
 
   return (
-    <div className="w-full space-y-2">
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        जागांची तपशील *
+    <div className="space-y-3 w-full">
+      <label className="block text-sm font-medium text-gray-800 dark:text-gray-300">
+        जागांचा तपशील *
       </label>
-      
-      <div className="overflow-hidden border border-gray-300 dark:border-gray-700 rounded-md">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800">
-            <tr>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">नाव </th>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-32">जागा </th>
-              <th className="px-4 py-2 w-16"></th>
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-            {value.map((row, index) => (
-              <tr key={index}>
-                <td className="px-4 py-2">
-                  <input
-                    type="text"
-                    placeholder="उदा. जूनियर क्लर्क "
-                    className="w-full border-0 p-1 bg-transparent focus:ring-0 text-sm dark:text-white placeholder-gray-400 focus:outline-none"
-                    value={row.post}
-                    onChange={(e) => handleChange(index, 'post', e.target.value)}
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="number"
-                    placeholder="0"
-                    className="w-full border-0 p-1 bg-transparent focus:ring-0 text-sm dark:text-white placeholder-gray-400 focus:outline-none"
-                    value={row.seats}
-                    onChange={(e) => handleChange(index, 'seats', e.target.value)}
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2 text-right">
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveRow(index)}
-                    className="text-red-500 hover:text-red-700 disabled:opacity-30 flex items-center justify-center"
-                    disabled={value.length <= 1}
-                    title="Remove row"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        
-        <div className="bg-gray-50 dark:bg-gray-800 px-4 py-2 border-t border-gray-200 dark:border-gray-700">
-          <Button 
-            type="button" 
-            variant="ghost" 
-            size="sm" 
-            onClick={handleAddRow} 
-            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20"
+
+      <div className="space-y-3">
+        {value.map((row, index) => (
+          <div
+            key={index}
+            className="
+              grid grid-cols-12 gap-3 p-3
+              bg-white dark:bg-gray-900 
+              border border-gray-200 dark:border-gray-700 
+              rounded-lg
+            "
           >
-            <Plus size={16} className="mr-2" /> Add Row
-          </Button>
-        </div>
+            {/* पद नाव */}
+            <div className="col-span-12 sm:col-span-6">
+              <label className="text-xs text-gray-500 dark:text-gray-400">पद</label>
+              <input
+                type="text"
+                value={row.post}
+                onChange={(e) => updateRow(index, "post", e.target.value)}
+                placeholder="उदा. जूनियर क्लर्क"
+                className="
+                  w-full px-3 py-2 border rounded-md 
+                  bg-gray-50 dark:bg-gray-800
+                  border-gray-300 dark:border-gray-600
+                  text-sm dark:text-white
+                "
+              />
+            </div>
+
+            {/* जागा संख्या */}
+            <div className="col-span-10 sm:col-span-5">
+              <label className="text-xs text-gray-500 dark:text-gray-400">जागा</label>
+              <input
+                type="number"
+                value={row.seats}
+                onChange={(e) => updateRow(index, "seats", e.target.value)}
+                placeholder="0"
+                className="
+                  w-full px-3 py-2 border rounded-md 
+                  bg-gray-50 dark:bg-gray-800
+                  border-gray-300 dark:border-gray-600
+                  text-sm dark:text-white
+                "
+              />
+            </div>
+
+            {/* Delete Button – PERFECT POSITIONING */}
+            <div
+              className="
+                col-span-2 flex items-end justify-end 
+                sm:col-span-1 sm:flex sm:items-center sm:justify-end
+              "
+            >
+              <button
+                type="button"
+                disabled={value.length <= 1}
+                onClick={() => removeRow(index)}
+                className="
+                  p-2 rounded-md bg-red-100 text-red-600 
+                  hover:bg-red-200 disabled:opacity-40
+                  dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50
+                "
+              >
+                <Trash2 size={18} />
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
+
+      {/* Add Row Button */}
+      <div className="pt-2">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={addRow}
+          className="text-blue-600 border-blue-300 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-700 dark:hover:bg-blue-900/30"
+        >
+          <Plus size={16} className="mr-2" /> Add Row
+        </Button>
+      </div>
+
       {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
   );

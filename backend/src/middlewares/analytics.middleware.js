@@ -8,6 +8,7 @@ const getStartOfToday = () => {
 
 export const trackVisitMiddleware = async (req, res, next) => {
   try {
+    if (req.method !== "GET") return next();
     const today = getStartOfToday();
     Analytics.findOneAndUpdate(
       { date: today },

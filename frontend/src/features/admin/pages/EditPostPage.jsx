@@ -1,148 +1,156 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { getPostById, updatePost } from '../api/adminPostsApi';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { getPostById, updatePost } from "../api/adminPostsApi";
 
 // UI Components
-import { Button } from '../../../components/ui/Button';
-import { Input } from '../../../components/ui/Input';
-import { Spinner } from '../../../components/ui/Spinner';
-import { Card, CardHeader, CardBody } from '../../../components/ui/Card';
-import { TagsInput } from '../../../components/ui/TagsInput';
-import { SeatDetailsEditor } from '../../../features/admin/components/SeatDetailsEditor';
+import { Button } from "../../../components/ui/Button";
+import { Input } from "../../../components/ui/Input";
+import { Spinner } from "../../../components/ui/Spinner";
+import { Card, CardHeader, CardBody } from "../../../components/ui/Card";
+import { TagsInput } from "../../../components/ui/TagsInput";
+import { SeatDetailsEditor } from "../../../features/admin/components/SeatDetailsEditor";
 
 const EditPostPage = () => {
-  const { postId } = useParams(); // Get ID from URL
+  const { postId } = useParams();
   const navigate = useNavigate();
-  
+
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
 
-  // State matches the Create Post structure
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
-    title: '',
-    postName: '',
-    category: 'भरती', 
+    title: "",
+    postName: "",
+    category: "भरती",
     seatDetails: [],
     ageLimit: [],
     qualifications: [],
     fees: [],
     documentsRequired: [],
-    lastDate: '',
-    startDate: '',
-    source: '',
-    totalSeats: '',
-    others: '',
-    isActive: true
+    lastDate: "",
+    startDate: "",
+    source: "",
+    totalSeats: "",
+    others: "",
+    isActive: true,
   });
 
-  // 1. Fetch existing data on load
+  // Load existing post
   useEffect(() => {
-    const fetchPostData = async () => {
+    const loadData = async () => {
       try {
         const response = await getPostById(postId);
-        if (response.success) {
-            const data = response.data;
-            
-            setFormData({
-                title: data.title || '',
-                postName: data.postName || '',
-                category: data.category || 'भरती',
-                
-                // Handle Seat Details (Ensure it's an array)
-                seatDetails: Array.isArray(data.seatDetails) ? data.seatDetails : [],
 
-                // Handle Tag Arrays (Ensure they are arrays)
-                ageLimit: Array.isArray(data.ageLimit) ? data.ageLimit : [],
-                qualifications: Array.isArray(data.qualifications) ? data.qualifications : [],
-                fees: Array.isArray(data.fees) ? data.fees : [],
-                documentsRequired: Array.isArray(data.documentsRequired) ? data.documentsRequired : [],
-                
-                // Format Dates for Input type="date" (YYYY-MM-DD)
-                lastDate: data.lastDate ? new Date(data.lastDate).toISOString().split('T')[0] : '',
-                startDate: data.startDate ? new Date(data.startDate).toISOString().split('T')[0] : '',
-                
-                source: data.source || '',
-                totalSeats: data.totalSeats || '',
-                others: data.others || '',
-                isActive: data.isActive
-            });
+        if (response.success) {
+          const data = response.data;
+
+          setFormData({
+            title: data.title || "",
+            postName: data.postName || "",
+            category: data.category || "भरती",
+            seatDetails: Array.isArray(data.seatDetails) ? data.seatDetails : [],
+            ageLimit: Array.isArray(data.ageLimit) ? data.ageLimit : [],
+            qualifications: Array.isArray(data.qualifications)
+              ? data.qualifications
+              : [],
+            fees: Array.isArray(data.fees) ? data.fees : [],
+            documentsRequired: Array.isArray(data.documentsRequired)
+              ? data.documentsRequired
+              : [],
+            lastDate: data.lastDate
+              ? new Date(data.lastDate).toISOString().split("T")[0]
+              : "",
+            startDate: data.startDate
+              ? new Date(data.startDate).toISOString().split("T")[0]
+              : "",
+            source: data.source || "",
+            totalSeats: data.totalSeats || "",
+            others: data.others || "",
+            isActive: Boolean(data.isActive),
+          });
         }
-      } catch (err) {
-        console.error("Failed to load post", err);
-        setError("पोस्ट तपशील लोड करण्यात अयशस्वी.");
+      } catch {
+        setErrors({ general: "पोस्ट लोड करण्यात अयशस्वी." });
       } finally {
         setLoading(false);
       }
     };
 
-    if (postId) {
-        fetchPostData();
-    }
+    loadData();
   }, [postId]);
 
+  // Handle input fields
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
+
     setFormData((prev) => ({
       ...prev,
-      [id]: type === 'checkbox' ? checked : value
+      [id]: type === "checkbox" ? checked : value,
     }));
   };
 
-  // Handler for TagsInput
-  const handleTagsChange = (field, newTags) => {
-    setFormData(prev => ({ ...prev, [field]: newTags }));
+  // Handle tag inputs
+  const handleTagsChange = (field, tags) => {
+    setFormData((prev) => ({ ...prev, [field]: tags }));
   };
 
-  // Handler for SeatDetails
-  const handleSeatDetailsChange = (newSeatDetails) => {
-    setFormData(prev => ({ ...prev, seatDetails: newSeatDetails }));
+  // Handle seat detail changes
+  const handleSeatDetailsChange = (rows) => {
+    setFormData((prev) => ({ ...prev, seatDetails: rows }));
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.title.trim()) newErrors.title = "शीर्षक आवश्यक आहे.";
+    if (!formData.postName.trim()) newErrors.postName = "पदाचे नाव आवश्यक आहे.";
+
+    if (formData.fees.length === 0)
+      newErrors.fees = "कृपया फी टाका.";
+    if (formData.ageLimit.length === 0)
+      newErrors.ageLimit = "कृपया वयोमर्यादा टाका.";
+    if (formData.qualifications.length === 0)
+      newErrors.qualifications = "कृपया पात्रता टाका.";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    setError(null);
+    setErrors({});
 
-    // Basic validation
-    if (formData.ageLimit.length === 0) {
-        setError("कृपया किमान एक वयोमर्यादा टॅग जोडा.");
-        setSubmitting(false);
-        return;
-    }
-    if (formData.qualifications.length === 0) {
-        setError("कृपया किमान एक पात्रता टॅग जोडा.");
-        setSubmitting(false);
-        return;
-    }
-    if (formData.fees.length === 0) {
-        setError("कृपया किमान एक फी टॅग जोडा.");
-        setSubmitting(false);
-        return;
+    if (!validateForm()) {
+      setSubmitting(false);
+      return;
     }
 
     try {
-      // 2. Send Update Request
       await updatePost(postId, formData);
-      navigate('/admin/posts'); // Go back to list
+      navigate("/admin/posts");
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || 'पोस्ट अपडेट करण्यात अयशस्वी');
+      setErrors({
+        general: err.response?.data?.message || "पोस्ट अपडेट करण्यात अयशस्वी",
+      });
     } finally {
       setSubmitting(false);
     }
   };
 
   if (loading) {
-      return (
-          <div className="flex h-64 items-center justify-center">
-              <Spinner size="lg" />
-          </div>
-      );
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
       <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
         पोस्ट संपादित करा
       </h1>
@@ -150,38 +158,39 @@ const EditPostPage = () => {
       <form onSubmit={handleSubmit}>
         <Card>
           <CardHeader>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               अपडेट तपशील
             </h3>
           </CardHeader>
-          
-          <CardBody className="space-y-8">
-            
-            {/* Section 1: Required Information */}
+
+          <CardBody className="space-y-8 p-4 sm:p-6">
+
+            {/* SECTION 1 */}
             <div>
-              <h4 className="text-md font-semibold text-blue-600 dark:text-blue-400 mb-4 border-b pb-2 border-blue-100 dark:border-blue-900">
-                1. आवश्यक माहिती
+              <h4 className="text-md font-semibold text-blue-600 dark:text-blue-400 mb-4 border-b pb-2">
+                1. आवश्यक तपशील
               </h4>
-              
+
               <div className="space-y-6">
-                {/* Row 1: Title & Category */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Title + Category */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <Input
                     id="title"
                     label="शीर्षक *"
                     value={formData.title}
                     onChange={handleChange}
-                    required
+                    error={errors.title}
                   />
-                  <div className="w-full">
-                    <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
                       वर्ग *
                     </label>
                     <select
                       id="category"
                       value={formData.category}
                       onChange={handleChange}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                      className="w-full border border-gray-300 rounded-md p-2 dark:bg-gray-800 dark:text-white dark:border-gray-700"
                     >
                       <option value="भरती">भरती</option>
                       <option value="ऑनलाईन अर्ज">ऑनलाईन अर्ज</option>
@@ -192,17 +201,17 @@ const EditPostPage = () => {
                   </div>
                 </div>
 
-                {/* Row 2: Post Name */}
+                {/* Post Name */}
                 <Input
                   id="postName"
                   label="पदाचे नाव *"
                   value={formData.postName}
                   onChange={handleChange}
-                  required
+                  error={errors.postName}
                 />
 
-                {/* Row 3: Dates */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Dates */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <Input
                     id="startDate"
                     label="सुरुवात तारीख"
@@ -216,130 +225,138 @@ const EditPostPage = () => {
                     type="date"
                     value={formData.lastDate}
                     onChange={handleChange}
-                    required
                   />
                 </div>
 
-                {/* Row 4: Tags (Fees, Age, Qual) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <TagsInput
+                {/* Tags (Fees, Age, Qualifications) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <TagsInput
                     id="fees"
                     label="फी *"
-                    placeholder="टाइप करा आणि Enter दाबा"
+                    placeholder="उदा. Open: ₹500"
                     value={formData.fees}
-                    onChange={(tags) => handleTagsChange('fees', tags)}
+                    onChange={(t) => handleTagsChange("fees", t)}
+                    error={errors.fees}
                   />
-                  
-                   <TagsInput
+
+                  <TagsInput
                     id="ageLimit"
                     label="वयोमर्यादा *"
-                    placeholder="टाइप करा आणि Enter दाबा"
+                    placeholder="उदा. 18-38 वर्षे"
                     value={formData.ageLimit}
-                    onChange={(tags) => handleTagsChange('ageLimit', tags)}
+                    onChange={(t) => handleTagsChange("ageLimit", t)}
+                    error={errors.ageLimit}
                   />
                 </div>
 
                 <TagsInput
-                    id="qualifications"
-                    label="पात्रता *"
-                    placeholder="टाइप करा आणि Enter दाबा"
-                    value={formData.qualifications}
-                    onChange={(tags) => handleTagsChange('qualifications', tags)}
+                  id="qualifications"
+                  label="पात्रता *"
+                  placeholder="उदा. 10वी पास"
+                  value={formData.qualifications}
+                  onChange={(t) => handleTagsChange("qualifications", t)}
+                  error={errors.qualifications}
                 />
 
-                {/* Seat Details (Required by your schema default/logic) */}
-                <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">जागांचा तपशील *</h4>
-                    <SeatDetailsEditor 
-                      value={formData.seatDetails}
-                      onChange={handleSeatDetailsChange}
-                    />
+                {/* Seat Details */}
+                <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+                  <h4 className="font-semibold mb-3 text-gray-700 dark:text-gray-200">
+                    जागांचा तपशील *
+                  </h4>
+                  <SeatDetailsEditor
+                    value={formData.seatDetails}
+                    onChange={handleSeatDetailsChange}
+                  />
                 </div>
               </div>
             </div>
 
-            {/* Section 2: Other / Optional Information */}
+            {/* SECTION 2 */}
             <div>
-              <h4 className="text-md font-semibold text-gray-600 dark:text-gray-400 mb-4 border-b pb-2 border-gray-200 dark:border-gray-700 mt-6">
-                2. इतर माहिती
+              <h4 className="text-md font-semibold text-gray-600 dark:text-gray-300 mb-4 border-b pb-2">
+                2. इतर तपशील
               </h4>
 
               <div className="space-y-6">
                 <Input
-                    id="totalSeats"
-                    label="एकूण जागा"
-                    type="number"
-                    value={formData.totalSeats}
-                    onChange={handleChange}
+                  id="totalSeats"
+                  label="एकूण जागा"
+                  type="number"
+                  value={formData.totalSeats}
+                  onChange={handleChange}
                 />
 
                 <TagsInput
-                    id="documentsRequired"
-                    label="आवश्यक कागदपत्रे"
-                    placeholder="टाइप करा आणि Enter दाबा"
-                    value={formData.documentsRequired}
-                    onChange={(tags) => handleTagsChange('documentsRequired', tags)}
+                  id="documentsRequired"
+                  label="आवश्यक कागदपत्रे"
+                  placeholder="उदा. आधार कार्ड"
+                  value={formData.documentsRequired}
+                  onChange={(t) =>
+                    handleTagsChange("documentsRequired", t)
+                  }
                 />
 
                 <Input
-                    id="source"
-                    label="अधिकृत लिंक"
-                    value={formData.source}
-                    onChange={handleChange}
+                  id="source"
+                  label="अधिकृत लिंक"
+                  value={formData.source}
+                  onChange={handleChange}
                 />
 
-                {/* Others Field */}
-                <div className="w-full">
-                  <label htmlFor="others" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {/* Others */}
+                <div>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
                     इतर माहिती
                   </label>
                   <textarea
                     id="others"
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white p-2 resize-none"
                     rows="4"
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white placeholder-gray-400"
-                    placeholder="काही अतिरिक्त सूचना किंवा माहिती..."
+                    placeholder="अतिरिक्त तपशील..."
                     value={formData.others}
                     onChange={handleChange}
                   ></textarea>
                 </div>
 
-                {/* Active Checkbox */}
-                <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <input
-                        id="isActive"
-                        type="checkbox"
-                        checked={formData.isActive}
-                        onChange={handleChange}
-                        className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
-                    />
-                    <label htmlFor="isActive" className="ml-3 block text-sm font-medium text-gray-900 dark:text-gray-200 cursor-pointer">
-                        Active - Visible to all
-                    </label>
+                {/* Active Toggle */}
+                <div className="flex items-center bg-gray-50 dark:bg-gray-800 p-3 rounded-lg border border-gray-300 dark:border-gray-700">
+                  <input
+                    id="isActive"
+                    type="checkbox"
+                    checked={formData.isActive}
+                    onChange={handleChange}
+                    className="w-5 h-5 cursor-pointer"
+                  />
+                  <label
+                    htmlFor="isActive"
+                    className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer"
+                  >
+                    Active - सर्वांना दिसेल
+                  </label>
                 </div>
               </div>
             </div>
 
-            {/* Error Display */}
-            {error && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded flex items-center">
-                <span className="mr-2">⚠️</span> {error}
+            {/* General Error */}
+            {errors.general && (
+              <div className="p-3 bg-red-50 border border-red-300 text-red-700 rounded">
+                {errors.general}
               </div>
             )}
 
-            {/* Actions */}
-            <div className="flex justify-end gap-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-               <Button 
-                 type="button" 
-                 variant="outline" 
-                 onClick={() => navigate('/admin/posts')}
-               >
+            {/* Buttons */}
+            <div className="flex justify-end gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => navigate("/admin/posts")}
+              >
                 Cancel
-               </Button>
-               <Button type="submit" isLoading={submitting}>
-                 Update
-               </Button>
+              </Button>
+              <Button type="submit" isLoading={submitting}>
+                Update
+              </Button>
             </div>
-
           </CardBody>
         </Card>
       </form>

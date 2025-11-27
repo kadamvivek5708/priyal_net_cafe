@@ -6,6 +6,7 @@ import { createService,
          getAllServices,
          getService, 
          getAdminServices} from "../controllers/services.controller.js";
+import { trackVisitMiddleware } from "../middlewares/analytics.middleware.js";
 
 const router = Router()
 
@@ -14,7 +15,7 @@ router.route("/update-service/:serviceId").patch(verifyJWT, updateService)
 router.route("/delete-service/:serviceId").delete(verifyJWT, deleteService)
 router.route("/admin/get-all-services").get(verifyJWT,getAdminServices)
 
-router.route("/get-service/:serviceId").get(getService)
-router.route("/get-all-services").get(getAllServices)
+router.route("/get-service/:serviceId").get(trackVisitMiddleware, getService)
+router.route("/get-all-services").get(trackVisitMiddleware, getAllServices)
 
 export default router

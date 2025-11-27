@@ -9,6 +9,7 @@ import { createPost,
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { trackPostVisit } from "../middlewares/trackPostViews.middleware.js";
+import { trackVisitMiddleware } from "../middlewares/analytics.middleware.js";
 
 const router = Router()
 
@@ -20,9 +21,25 @@ router.route("/admin/get-all-posts").get(verifyJWT, getAdminPosts)
 router.route("/admin/get-post/:postId").get(verifyJWT, getPostById)
 
 // routes for everyone
-router.route("/get-post/:postId").get(trackPostVisit,getPostById)
-router.route("/get-all-posts").get(getAllPosts)
-router.route("/get-expired-posts").get(getExpiredPosts)
+// Public Post Detail (Counts per-post view + website visit)
+router.route("/get-post/:postId").get(
+  trackVisitMiddleware,
+  trackPostVisit,
+  getPostById
+);
+
+// Public Post List (Counts website visit only)
+router.route("/get-all-posts").get(
+  trackVisitMiddleware,
+  getAllPosts
+);
+
+// Public Expired Post List (Counts website visit only)
+router.route("/get-expired-posts").get(
+  trackVisitMiddleware,
+  getExpiredPosts
+);
+
 
 // auto deactivate
 router.route("/deactivateExpiredPosts").patch(deactivateExpiredPosts)

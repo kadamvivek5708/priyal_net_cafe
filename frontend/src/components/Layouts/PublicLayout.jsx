@@ -54,16 +54,19 @@ export const PublicLayout = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+          <div className="md:hidden absolute top-16 left-0 w-full bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-lg z-40">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               <Link to="/" onClick={toggleMenu} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700">
-                Home
+                होम
               </Link>
               <Link to="/posts" onClick={toggleMenu} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700">
-                Updates / Jobs
+                नोकरी अपडेट्स
               </Link>
               <Link to="/services" onClick={toggleMenu} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700">
-                Services
+                ईतर सेवा
+              </Link>
+              <Link to="/contact" onClick={toggleMenu} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700">
+                संपर्क
               </Link>
             </div>
           </div>
@@ -71,7 +74,7 @@ export const PublicLayout = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-grow">
+      <main className="grow">
         <Outlet />
       </main>
 

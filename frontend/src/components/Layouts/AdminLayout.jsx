@@ -1,5 +1,5 @@
 // src/components/Layout/AdminLayout.jsx
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react'; // Added useRef, useEffect
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../../features/auth/hooks/useAuth';
 import { 
@@ -9,22 +9,32 @@ import {
   LogOut, 
   Menu,
   X,
-  FilePlus2,
 } from 'lucide-react';
 
 export const AdminLayout = () => {
   const { logout } = useAuth();
   const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
+  // 1. Create a Reference to the main scrollable container
+  const mainContentRef = useRef(null);
+
+  // 2. Scroll to top whenever the route (pathname) changes
+  useEffect(() => {
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollTo({
+        top: 0,
+        behavior: 'instant' // Snaps to top immediately
+      });
+    }
+  }, [location.pathname]);
 
   // Helper to check if a link is active
   const isActive = (path) => location.pathname.startsWith(path);
 
   const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
-    // { name: 'Add Post', path: '/admin/posts/create', icon: FilePlus2},
     { name: 'Manage Posts', path: '/admin/posts', icon: FileText },
-    // { name: 'Add Service', path: '/admin/services/create', icon: FilePlus2},
     { name: 'Manage Services', path: '/admin/services', icon: Briefcase },
   ];
 
@@ -97,8 +107,11 @@ export const AdminLayout = () => {
           <span className="ml-4 font-semibold text-gray-800 dark:text-white">Admin Panel</span>
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8">
+        {/* Page Content - ATTACHED THE REF HERE */}
+        <main 
+          ref={mainContentRef} 
+          className="flex-1 overflow-y-auto p-4 lg:p-8"
+        >
           <Outlet />
         </main>
       </div>
