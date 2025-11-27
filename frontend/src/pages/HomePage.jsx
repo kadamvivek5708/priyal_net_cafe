@@ -67,7 +67,7 @@ const HomePage = () => {
              <img 
                src="/logo-marathi.png" 
                alt="Priyal Net Cafe Marathi Logo" 
-               className="w-full max-w-md object-contain drop-shadow-xl transform hover:scale-105 transition-transform duration-300"
+               className="w-full max-w-md object-contain transform hover:scale-105 transition-transform duration-300"
                onError={(e) => {
                  e.target.onerror = null; 
                  // Fallback if image not found
