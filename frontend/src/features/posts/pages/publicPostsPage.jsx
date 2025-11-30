@@ -15,7 +15,7 @@ const PublicPostsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortOption, setSortOption] = useState('newest');
 
-  const categories = ['All', 'भरती', 'ऑनलाईन अर्ज', 'स्पर्धा परीक्षा', 'निकाल', 'इतर'];
+  const categories = ['All', 'भरती', 'स्पर्धा परीक्षा', 'निकाल'];
 
   useEffect(() => {
     const fetchPosts = async () => {
