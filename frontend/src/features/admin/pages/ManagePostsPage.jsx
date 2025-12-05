@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getAllPosts, deletePost } from '../api/adminPostsApi';
 
 // UI Components
@@ -13,13 +13,11 @@ import {
   Calendar, 
   CheckCircle, 
   XCircle,
-  FileText,
-  Eye
+  FileText
 } from 'lucide-react';
 
 const ManagePostsPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -83,9 +81,10 @@ const ManagePostsPage = () => {
   }
 
   return (
-    <div className="p-6 md:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div className="p-3 sm:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="max-w-6xl mx-auto space-y-6">
         
+        {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
@@ -102,6 +101,7 @@ const ManagePostsPage = () => {
           </Button>
         </div>
 
+        {/* Search Bar */}
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400" />
@@ -115,17 +115,19 @@ const ManagePostsPage = () => {
           />
         </div>
 
+        {/* Posts Grid */}
         <div className="grid gap-4">
           {filteredPosts.length > 0 ? (
             filteredPosts.map((post) => (
               <div 
                 key={post._id} 
                 onClick={() => handleViewDetails(post._id)}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-shadow flex flex-col md:flex-row justify-between gap-4 items-start md:items-center cursor-pointer group"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 hover:shadow-md transition-shadow flex flex-col md:flex-row justify-between gap-4 items-start md:items-center cursor-pointer group"
               >
                 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
+                {/* Content Section */}
+                <div className="flex-1 min-w-0 w-full">
+                  <div className="flex items-center gap-2 mb-2">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-100 dark:border-blue-800">
                       {post.category}
                     </span>
@@ -140,7 +142,7 @@ const ManagePostsPage = () => {
                     )}
                   </div>
                   
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate pr-4 group-hover:text-blue-600 transition-colors">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate md:pr-4 group-hover:text-blue-600 transition-colors">
                     {post.title}
                   </h3>
 
@@ -159,7 +161,8 @@ const ManagePostsPage = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 w-full md:w-auto border-t md:border-t-0 pt-4 md:pt-0 border-gray-100 dark:border-gray-700">
+                {/* Action Buttons */}
+                <div className="flex items-center justify-end gap-3 w-full md:w-auto border-t md:border-t-0 pt-3 md:pt-0 border-gray-100 dark:border-gray-700">
                   <Button 
                     variant="outline" 
                     size="sm" 

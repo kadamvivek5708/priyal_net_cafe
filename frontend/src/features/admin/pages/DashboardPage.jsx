@@ -170,14 +170,15 @@ const DashboardPage = () => {
                     {stats.topPosts.map((post, index) => (
                       <div
                         key={post.postId}
-                        className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition flex justify-between items-center"
+                        className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition flex justify-between items-center gap-3"
                       >
-                        <div className="flex items-start gap-4">
-                          <span className="w-6 text-gray-400 font-medium text-center mt-1">
+                
+                        <div className="flex items-start gap-4 flex-1 min-w-0">
+                          <span className="w-6 text-gray-400 font-medium text-center mt-1 shrink-0">
                             #{index + 1}
                           </span>
 
-                          <div className="min-w-0">
+                          <div className="min-w-0 flex-1">
                             <p className="font-semibold text-gray-900 dark:text-white truncate hover:text-blue-600 transition">
                               {post.title}
                             </p>
@@ -189,7 +190,8 @@ const DashboardPage = () => {
                           </div>
                         </div>
 
-                        <div className="px-3 py-1 text-xs font-bold bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full flex items-center">
+                        
+                        <div className="shrink-0 px-3 py-1 text-xs font-bold bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full flex items-center">
                           <Eye size={14} className="mr-1" /> {post.views}
                         </div>
                       </div>
